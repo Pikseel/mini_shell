@@ -1,0 +1,1 @@
+gcc *.c *.h tools/*.c builtin/*.c -lreadline
