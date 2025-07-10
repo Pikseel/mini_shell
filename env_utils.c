@@ -57,8 +57,10 @@ t_env	*init_env_list(char **env)
 	while (env && *env)
 	{
 		parse_env_entry(*env, &key, &value);
-		lst_addback(&env_list, lst_new(key, value));
 		env++;
+		if(strcmp(key, "SHLVL") == 0)
+			*value += 1;
+		lst_addback(&env_list, lst_new(key, value));
 	}
 	return (env_list);
 }

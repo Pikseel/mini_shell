@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/10 15:55:24 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/10 17:12:35 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,6 @@ int	main(int ac , char **av, char **env)
 		}
 		shell.tkn_list = NULL;
 		shell.cmd_list = NULL;
-		//heredoc, hata durumları, norm kuralları, leak, SHLVL, tilda~,
+		//heredoc, append, redirection, heredoc sinyal, hata durumları, norm kuralları, leak,
 	}
 }
