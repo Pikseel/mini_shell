@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   word_split.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:00:00 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/07 14:00:00 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/11 17:08:09 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ static char	**prepare_words_for_splitting(char *expanded_value)
 
 	temp_str = ft_strdup(expanded_value);
 	words = ft_split(temp_str);
+	temp_str = NULL;
 	return (words);
 }
 
@@ -100,6 +101,8 @@ void	handle_word_splitting(t_token *current, char *expanded_value)
 		current->type = WORD;
 		return;
 	}
+	expanded_value = NULL;
 	replace_current_token_value(current, words[0]);
 	insert_remaining_words(current, words);
+	words = NULL;
 }

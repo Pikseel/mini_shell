@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:50:30 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/10 15:33:26 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/11 15:22:12 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,30 +36,8 @@ static void	handler(int sig)
 	exit_status(130, PUSH);
 }
 
-static void	child_handler(int sig)
-{
-	if (sig == SIGINT)
-	{
-		ft_putstr_fd("\n", 1);
-		exit_status(130, PUSH);
-		exit(130);
-	}
-	else if (sig == SIGQUIT)
-	{
-		ft_putstr_fd("Quit (core dumped)\n", 2);
-		exit_status(131, PUSH);
-		exit(131);
-	}
-}
-
 void	init_signal(void)
 {
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &handler);
-}
-
-void	init_child_signal(void)
-{
-	signal(SIGINT, child_handler);
-	signal(SIGQUIT, child_handler);
 }

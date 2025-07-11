@@ -18,10 +18,10 @@ int	is_builtin(char *command)
 {
 	if (!command)
 		return (0);
-	if (!ft_strcmp(command, "echo") || !ft_strcmp(command, "cd") || 
-		!ft_strcmp(command, "pwd") || !ft_strcmp(command, "export") || 
-		!ft_strcmp(command, "unset") || !ft_strcmp(command, "env") || 
-		!ft_strcmp(command, "exit"))
+	if (!ft_strcmp(command, "echo") || !ft_strcmp(command, "cd")
+		|| !ft_strcmp(command, "pwd") || !ft_strcmp(command, "export")
+		|| !ft_strcmp(command, "unset") || !ft_strcmp(command, "env")
+		|| !ft_strcmp(command, "exit"))
 		return (1);
 	return (0);
 }
@@ -68,8 +68,8 @@ char	*find_command_path(char *command, t_env *env_list)
 		{
 			int j = 0;
 			while (paths[j])
-				free(paths[j++]);
-			free(paths);
+				paths[j++] = NULL;
+			paths = NULL;
 			return (full_path);
 		}
 		full_path = NULL;
@@ -77,9 +77,24 @@ char	*find_command_path(char *command, t_env *env_list)
 	}
 	i = 0;
 	while (paths[i])
-		free(paths[i++]);
-	free(paths);
+		paths[i++] = NULL;
+	paths = NULL;
 	return (NULL);
+}
+
+static void	free_env_array(char **env_array)
+{
+	int	i;
+
+	if (!env_array)
+		return ;
+	i = 0;
+	while (env_array[i])
+	{
+		env_array[i] = NULL;
+		i++;
+	}
+	env_array = NULL;
 }
 
 void	execute_external(char **args, t_env *env_list)
@@ -102,7 +117,6 @@ void	execute_external(char **args, t_env *env_list)
 	pid = fork();
 	if (pid == 0)
 	{
-		init_child_signal();
 		if (execve(cmd_path, args, env_array) == -1)
 		{
 			perror("minishell");
@@ -117,6 +131,7 @@ void	execute_external(char **args, t_env *env_list)
 	else if (pid > 0)
 	{
 		cmd_path = NULL;
+		free_env_array(env_array);
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			exit_status(WEXITSTATUS(status), PUSH);

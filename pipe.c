@@ -34,6 +34,32 @@ void	setup_pipes(t_command *cmd_list)
 	}
 }
 
+static void	execute_piped_child(t_command *cmd_list, t_command *current, 
+	t_env *env_list)
+{
+	if (current->input_fd != STDIN_FILENO)
+	{
+		dup2(current->input_fd, STDIN_FILENO);
+		close(current->input_fd);
+	}
+	if (current->output_fd != STDOUT_FILENO)
+	{
+		dup2(current->output_fd, STDOUT_FILENO);
+		close(current->output_fd);
+	}
+	t_command *close_cmd = cmd_list;
+	while (close_cmd)
+	{
+		if (close_cmd != current && close_cmd->input_fd != STDIN_FILENO)
+			close(close_cmd->input_fd);
+		if (close_cmd != current && close_cmd->output_fd != STDOUT_FILENO)
+			close(close_cmd->output_fd);
+		close_cmd = close_cmd->next;
+	}
+	execute_command(current->args, env_list);
+	exit(exit_status(0, PULL));
+}
+
 void	execute_piped_commands(t_command *cmd_list, t_env *env_list)
 {
 	pid_t		*pids;
@@ -57,30 +83,7 @@ void	execute_piped_commands(t_command *cmd_list, t_env *env_list)
 	{
 		pids[i] = fork();
 		if (pids[i] == 0)
-		{
-			init_child_signal();
-			if (current->input_fd != STDIN_FILENO)
-			{
-				dup2(current->input_fd, STDIN_FILENO);
-				close(current->input_fd);
-			}
-			if (current->output_fd != STDOUT_FILENO)
-			{
-				dup2(current->output_fd, STDOUT_FILENO);
-				close(current->output_fd);
-			}
-			t_command *close_cmd = cmd_list;
-			while (close_cmd)
-			{
-				if (close_cmd != current && close_cmd->input_fd != STDIN_FILENO)
-					close(close_cmd->input_fd);
-				if (close_cmd != current && close_cmd->output_fd != STDOUT_FILENO)
-					close(close_cmd->output_fd);
-				close_cmd = close_cmd->next;
-			}
-			execute_command(current->args, env_list);
-			exit(exit_status(0, PULL));
-		}
+			execute_piped_child(cmd_list, current, env_list);
 		i++;
 		current = current->next;
 	}
@@ -93,10 +96,13 @@ void	execute_piped_commands(t_command *cmd_list, t_env *env_list)
 			close(current->output_fd);
 		current = current->next;
 	}
-	for (i = 0; i < cmd_count; i++)
+	i = 0;
+	while (i < cmd_count)
 	{
 		waitpid(pids[i], &status, 0);
 		if (i == cmd_count - 1 && WIFEXITED(status))
 			exit_status(WEXITSTATUS(status), PUSH);
+		i++;
 	}
+	pids = NULL;
 }

@@ -40,9 +40,7 @@ static char	*ft_word_dup(const char *str, char c)
 	len = 0;
 	while (str[len] && str[len] != c)
 		len++;
-	word = (char *)malloc(sizeof(char) * (len + 1));
-	if (!word)
-		return (NULL);
+	word = ft_malloc(sizeof(char) * (len + 1), ALLOC);
 	i = 0;
 	while (i < len)
 	{
@@ -62,7 +60,7 @@ char	**ft_split_sep(char *s, char c)
 	if (!s)
 		return (NULL);
 	count = ft_count_words(s, c);
-	result = (char **)malloc(sizeof(char *) * (count + 1));
+	result = ft_malloc(sizeof(char *) * (count + 1), ALLOC);
 	if (!result)
 		return (NULL);
 	i = 0;

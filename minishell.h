@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/10 15:48:24 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/11 15:22:32 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,6 @@ char	**env_list_to_array(t_env *env_list);
 char	*get_env_value(t_env *env, const char *varname);
 
 void	init_signal(void);
-void	init_child_signal(void);
 
 t_token	*tokenize_input(char *input);
 int		count_word_tokens(t_token *tokens);

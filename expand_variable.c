@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 12:56:47 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/08 15:37:41 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/11 17:08:09 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ char	*handle_exit_status(char *result, int *i)
 
 	tmp = ft_itoa(exit_status(0, PULL));
 	new_res = ft_strjoin(result, tmp);
+	tmp = NULL;
 	*i += 1;
 	return (new_res);
 }
@@ -30,6 +31,7 @@ char	*append_char(char *result, const char *value, int *i)
 
 	tmp = ft_substr((char *)value, *i, 1);
 	new_res = ft_strjoin(result, tmp);
+	tmp = NULL;
 	*i += 1;
 	return (new_res);
 }
@@ -84,5 +86,6 @@ char	*append_variable(char *result, const char *value, int *i,
 	}
 	var = extract_variable_name(value, start, *i);
 	new_res = join_with_env_value(result, var, env);
+	var = NULL;
 	return (new_res);
 }

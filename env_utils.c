@@ -1,5 +1,5 @@
 /* ************************************************************************** */
-/*                                                                            */
+/*          	                                                              */
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
@@ -58,7 +58,7 @@ t_env	*init_env_list(char **env)
 	{
 		parse_env_entry(*env, &key, &value);
 		env++;
-		if(strcmp(key, "SHLVL") == 0)
+		if (strcmp(key, "SHLVL") == 0)
 			*value += 1;
 		lst_addback(&env_list, lst_new(key, value));
 	}
@@ -82,6 +82,7 @@ char	**env_list_to_array(t_env *env_list)
 {
 	char	**env_array;
 	char	*temp;
+	char	*temp_value;
 	int		count;
 	int		i;
 
@@ -91,7 +92,8 @@ char	**env_list_to_array(t_env *env_list)
 	while (env_list)
 	{
 		temp = ft_strjoin(env_list->key, "=");
-		env_array[i] = ft_strjoin(temp, env_list->value ? env_list->value : "");
+		temp_value = env_list->value ? env_list->value : "";
+		env_array[i] = ft_strjoin(temp, temp_value);
 		temp = NULL;
 		env_list = env_list->next;
 		i++;
