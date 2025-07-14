@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:50:30 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/11 15:22:12 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/14 16:31:47 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	exit_status(int status, int flag)
 {
 	static int	exit_status;
+
 	if (flag == PUSH)
 	{
 		exit_status = status;

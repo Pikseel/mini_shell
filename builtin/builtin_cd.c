@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/10 13:00:00 by mecavus          #+#    #+#             */
-/*   Updated: 2025/07/10 13:00:00 by mecavus         ###   ########.fr       */
+/*   Created: 2025/07/10 13:00:00 by mecavus           #+#    #+#             */
+/*   Updated: 2025/07/14 16:46:31 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	builtin_cd(char **args, t_env *env_list)
 		target_dir = get_env_value(env_list, "OLDPWD");
 	else
 		target_dir = args[1];
-	
 	if (!target_dir)
 	{
 		ft_putstr_fd("minishell: cd: ", 2);
@@ -49,7 +48,6 @@ void	builtin_cd(char **args, t_env *env_list)
 		return ;
 	}
 	old_pwd = getcwd(NULL, 0);
-	
 	if (chdir(target_dir) != 0)
 	{
 		perror("minishell: cd");

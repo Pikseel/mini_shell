@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:00:00 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/11 17:08:09 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/14 17:05:25 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	needs_word_splitting(char *expanded_value)
 	return (0);
 }
 
-t_token	*create_token_from_word(char *word, t_token *original)
+static t_token	*create_token_from_word(char *word, t_token *original)
 {
 	t_token	*new_token;
 
@@ -46,32 +46,6 @@ t_token	*create_token_from_word(char *word, t_token *original)
 	return (new_token);
 }
 
-static char	**prepare_words_for_splitting(char *expanded_value)
-{
-	char	*temp_str;
-	char	**words;
-
-	temp_str = ft_strdup(expanded_value);
-	words = ft_split(temp_str);
-	temp_str = NULL;
-	return (words);
-}
-
-static void	replace_current_token_value(t_token *current, char *first_word)
-{
-	current->value = ft_strdup(first_word);
-	current->type = WORD;
-}
-
-static void	insert_new_token_after(t_token *current, t_token *new_token)
-{
-	new_token->next = current->next;
-	new_token->prev = current;
-	if (current->next)
-		current->next->prev = new_token;
-	current->next = new_token;
-}
-
 static void	insert_remaining_words(t_token *current, char **words)
 {
 	t_token	*new_token;
@@ -83,11 +57,26 @@ static void	insert_remaining_words(t_token *current, char **words)
 		new_token = create_token_from_word(words[i], current);
 		if (new_token)
 		{
-			insert_new_token_after(current, new_token);
+			new_token->next = current->next;
+			new_token->prev = current;
+			if (current->next)
+				current->next->prev = new_token;
+			current->next = new_token;
 			current = new_token;
 		}
 		i++;
 	}
+}
+
+static char	**prepare_words_for_splitting(char *expanded_value)
+{
+	char	*temp_str;
+	char	**words;
+
+	temp_str = ft_strdup(expanded_value);
+	words = ft_split(temp_str);
+	temp_str = NULL;
+	return (words);
 }
 
 void	handle_word_splitting(t_token *current, char *expanded_value)
@@ -99,10 +88,11 @@ void	handle_word_splitting(t_token *current, char *expanded_value)
 	{
 		current->value = expanded_value;
 		current->type = WORD;
-		return;
+		return ;
 	}
 	expanded_value = NULL;
-	replace_current_token_value(current, words[0]);
+	current->value = ft_strdup(words[0]);
+	current->type = WORD;
 	insert_remaining_words(current, words);
 	words = NULL;
 }

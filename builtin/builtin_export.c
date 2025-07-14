@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/10 13:00:00 by mecavus          #+#    #+#             */
-/*   Updated: 2025/07/10 13:00:00 by mecavus         ###   ########.fr       */
+/*   Created: 2025/07/10 13:00:00 by mecavus           #+#    #+#             */
+/*   Updated: 2025/07/14 16:46:52 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,9 @@ static void	parse_env_arg(char *arg, char **key, char **value)
 		*value = NULL;
 		return ;
 	}
-	
 	*key = ft_malloc(equal_pos - arg + 1, ALLOC);
 	ft_strlcpy(*key, arg, equal_pos - arg + 1);
 	(*key)[equal_pos - arg] = '\0';
-	
 	*value = ft_malloc(ft_strlen(equal_pos + 1) + 1, ALLOC);
 	ft_strlcpy(*value, equal_pos + 1, ft_strlen(equal_pos + 1) + 1);
 }

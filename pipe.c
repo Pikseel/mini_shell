@@ -5,19 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/10 12:00:00 by mecavus          #+#    #+#             */
-/*   Updated: 2025/07/10 12:00:00 by mecavus         ###   ########.fr       */
+/*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
+/*   Updated: 2025/07/14 17:25:52 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include <sys/wait.h>
 
-void	setup_pipes(t_command *cmd_list)
+static void	setup_pipes(t_command *cmd_list)
 {
 	int			pipe_fd[2];
 	t_command	*current;
 	t_command	*next;
+	t_main		*shell;
 
 	current = cmd_list;
 	while (current && current->next)
@@ -25,8 +26,8 @@ void	setup_pipes(t_command *cmd_list)
 		next = current->next;
 		if (pipe(pipe_fd) == -1)
 		{
-			perror("minishell: pipe");
-			return ;
+			shell = (t_main *)ft_malloc(0, GET_SHELL);
+			clear_exit(shell, 1, "pipe error");
 		}
 		current->output_fd = pipe_fd[1];
 		next->input_fd = pipe_fd[0];
@@ -34,9 +35,11 @@ void	setup_pipes(t_command *cmd_list)
 	}
 }
 
-static void	execute_piped_child(t_command *cmd_list, t_command *current, 
+static void	execute_piped_child(t_command *cmd_list, t_command *current,
 	t_env *env_list)
 {
+	t_command	*close_cmd;
+
 	if (current->input_fd != STDIN_FILENO)
 	{
 		dup2(current->input_fd, STDIN_FILENO);
@@ -47,7 +50,7 @@ static void	execute_piped_child(t_command *cmd_list, t_command *current,
 		dup2(current->output_fd, STDOUT_FILENO);
 		close(current->output_fd);
 	}
-	t_command *close_cmd = cmd_list;
+	close_cmd = cmd_list;
 	while (close_cmd)
 	{
 		if (close_cmd != current && close_cmd->input_fd != STDIN_FILENO)
@@ -57,7 +60,7 @@ static void	execute_piped_child(t_command *cmd_list, t_command *current,
 		close_cmd = close_cmd->next;
 	}
 	execute_command(current->args, env_list);
-	exit(exit_status(0, PULL));
+	clear_exit(NULL, exit_status(0, PULL), NULL);
 }
 
 void	execute_piped_commands(t_command *cmd_list, t_env *env_list)

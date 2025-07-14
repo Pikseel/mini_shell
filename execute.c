@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/10 12:00:00 by mecavus          #+#    #+#             */
-/*   Updated: 2025/07/10 12:00:00 by mecavus         ###   ########.fr       */
+/*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
+/*   Updated: 2025/07/14 17:01:16 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-int	is_builtin(char *command)
-{
-	if (!command)
-		return (0);
-	if (!ft_strcmp(command, "echo") || !ft_strcmp(command, "cd")
-		|| !ft_strcmp(command, "pwd") || !ft_strcmp(command, "export")
-		|| !ft_strcmp(command, "unset") || !ft_strcmp(command, "env")
-		|| !ft_strcmp(command, "exit"))
-		return (1);
-	return (0);
-}
-
-void	execute_builtin(char **args, t_env **env_list)
+static void	execute_builtin(char **args, t_env **env_list)
 {
 	if (!ft_strcmp(args[0], "echo"))
 		builtin_echo(args);
@@ -44,13 +32,14 @@ void	execute_builtin(char **args, t_env **env_list)
 		builtin_exit(args);
 }
 
-char	*find_command_path(char *command, t_env *env_list)
+static char	*find_command_path(char *command, t_env *env_list)
 {
 	char	**paths;
 	char	*path_env;
 	char	*full_path;
 	char	*temp;
 	int		i;
+	int		j;
 
 	if (ft_strchr(command, '/'))
 		return (ft_strdup(command));
@@ -66,7 +55,7 @@ char	*find_command_path(char *command, t_env *env_list)
 		temp = NULL;
 		if (access(full_path, X_OK) == 0)
 		{
-			int j = 0;
+			j = 0;
 			while (paths[j])
 				paths[j++] = NULL;
 			paths = NULL;
@@ -97,7 +86,7 @@ static void	free_env_array(char **env_array)
 	env_array = NULL;
 }
 
-void	execute_external(char **args, t_env *env_list)
+static void	execute_external(char **args, t_env *env_list)
 {
 	pid_t	pid;
 	char	**env_array;
@@ -121,11 +110,8 @@ void	execute_external(char **args, t_env *env_list)
 		{
 			perror("minishell");
 			cmd_path = NULL;
-			int i = 0;
-			while (env_array[i])
-				env_array[i++] = NULL;
-			env_array = NULL;
-			exit(126);
+			free_env_array(env_array);
+			clear_exit(NULL, 126, NULL);
 		}
 	}
 	else if (pid > 0)
@@ -140,7 +126,10 @@ void	execute_external(char **args, t_env *env_list)
 
 void	execute_command(char **args, t_env *env_list)
 {
-	if (is_builtin(args[0]))
+	if (!ft_strcmp(args[0], "echo") || !ft_strcmp(args[0], "cd")
+		|| !ft_strcmp(args[0], "pwd") || !ft_strcmp(args[0], "export")
+		|| !ft_strcmp(args[0], "unset") || !ft_strcmp(args[0], "env")
+		|| !ft_strcmp(args[0], "exit"))
 		execute_builtin(args, &env_list);
 	else
 		execute_external(args, env_list);

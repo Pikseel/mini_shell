@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 16:44:32 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/04 17:37:38 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:31:35 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,11 @@ static int	skip_quote(char *s, int i)
 
 static int	check_operator(char *s, int i)
 {
-	char	c = s[i];
-	int		count = 0;
+	char	c;
+	int		count;
 
+	c = s[i];
+	count = 0;
 	while (s[i] == c)
 	{
 		count++;
@@ -60,8 +62,9 @@ static int	check_operator(char *s, int i)
 
 static int	skip_op_and_space(char *s, int i)
 {
-	char	c = s[i];
+	char	c;
 
+	c = s[i];
 	while (s[i] == c)
 		i++;
 	i = skip_spaces(s, i);
@@ -73,10 +76,10 @@ int	check_syntax(char *s)
 	int	i;
 
 	if (!s || check_quotes(s))
-		return (ft_putstr_fd("syntax error: bad quote\n", 2), 1);
+		return (ft_putstr_fd("bad quote\n", 2), exit_status(2, PUSH), 1);
 	i = skip_spaces(s, 0);
 	if (s[i] == '|')
-		return (ft_putstr_fd("syntax error: start pipe\n", 2), 1);
+		return (ft_putstr_fd("bad pipe\n", 2), exit_status(2, PUSH), 1);
 	i = -1;
 	while (s[++i])
 	{
@@ -85,10 +88,10 @@ int	check_syntax(char *s)
 		else if (s[i] == '|' || s[i] == '<' || s[i] == '>')
 		{
 			if (check_operator(s, i))
-				return (ft_putstr_fd("syntax error: bad operator\n", 2), 1);
+				return (ft_putstr_fd("bad op\n", 2), exit_status(2, PUSH), 1);
 			i = skip_op_and_space(s, i);
 			if (!s[i] || s[i] == '|' || s[i] == '<' || s[i] == '>')
-				return (ft_putstr_fd("syntax error: bad arg\n", 2), 1);
+				return (ft_putstr_fd("bad arg\n", 2), exit_status(2, PUSH), 1);
 			i--;
 		}
 	}

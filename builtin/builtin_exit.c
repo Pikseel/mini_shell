@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/10 13:30:00 by mecavus          #+#    #+#             */
-/*   Updated: 2025/07/10 13:30:00 by mecavus         ###   ########.fr       */
+/*   Created: 2025/07/10 13:30:00 by mecavus           #+#    #+#             */
+/*   Updated: 2025/07/14 16:46:47 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ static int	check_exit_arg_validity(char *arg)
 
 void	builtin_exit(char **args)
 {
-	int	exit_code;
+	int		exit_code;
+	t_main	*shell;
 
 	ft_putstr_fd("exit\n", 1);
 	if (!args[1])
@@ -60,11 +61,7 @@ void	builtin_exit(char **args)
 	}
 	else
 		exit_code = check_exit_arg_validity(args[1]);
-	
 	exit_status(exit_code, PUSH);
-	
-	clear_history();
-	rl_clear_history();
-	ft_malloc(0, CLEAR);
-	exit(exit_code);
+	shell = (t_main *)ft_malloc(0, GET_SHELL);
+	clear_exit(shell, exit_code, NULL);
 }

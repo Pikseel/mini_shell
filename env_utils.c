@@ -1,12 +1,12 @@
 /* ************************************************************************** */
-/*          	                                                              */
+/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:25:00 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/10 12:00:00 by mecavus         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:56:55 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ t_env	*init_env_list(char **env)
 	return (env_list);
 }
 
-int	count_env(t_env *env_list)
+static int	count_env(t_env *env_list)
 {
 	int	count;
 
@@ -82,7 +82,6 @@ char	**env_list_to_array(t_env *env_list)
 {
 	char	**env_array;
 	char	*temp;
-	char	*temp_value;
 	int		count;
 	int		i;
 
@@ -92,8 +91,10 @@ char	**env_list_to_array(t_env *env_list)
 	while (env_list)
 	{
 		temp = ft_strjoin(env_list->key, "=");
-		temp_value = env_list->value ? env_list->value : "";
-		env_array[i] = ft_strjoin(temp, temp_value);
+		if (env_list->value)
+			env_array[i] = ft_strjoin(temp, env_list->value);
+		else
+			env_array[i] = ft_strjoin(temp, "");
 		temp = NULL;
 		env_list = env_list->next;
 		i++;

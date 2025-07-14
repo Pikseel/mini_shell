@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:20:52 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/04 14:21:02 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/14 14:32:55 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

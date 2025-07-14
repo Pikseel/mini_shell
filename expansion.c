@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 12:57:30 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/08 15:37:02 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/14 16:49:19 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ char	*get_env_value(t_env *env, const char *varname)
 static int	check_type(t_token tkn)
 {
 	if (tkn.type == EXPAND || tkn.type == D_QUOT || tkn.type == S_QUOT
-		|| (tkn.type == WORD && (ft_strchr(tkn.value, '$') || ft_strchr(tkn.value, '\'') || ft_strchr(tkn.value, '\"'))))
+		|| (tkn.type == WORD && (ft_strchr(tkn.value, '$')
+				|| ft_strchr(tkn.value, '\'') || ft_strchr(tkn.value, '\"'))))
 		return (1);
 	return (0);
 }
@@ -83,7 +84,8 @@ void	solve_expansion(t_token *list, t_env *env)
 		if (check_type(*current))
 		{
 			expanded_value = process_mixed_quotes(current->value, env);
-			if ((current->type == WORD || current->type == EXPAND) && needs_word_splitting(expanded_value))
+			if ((current->type == WORD || current->type == EXPAND)
+				&& needs_word_splitting(expanded_value))
 				handle_word_splitting(current, expanded_value);
 			else
 			{

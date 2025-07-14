@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/11 17:51:22 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/14 16:54:14 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,79 +21,76 @@ static void	init_shell(t_main *shell, char **env)
 	shell->env_list = init_env_list(env);
 }
 
-int	check_exit(char *input)
+void	clear_exit(t_main *shell, int exit_code, char *message)
+{
+	if (message)
+	{
+		if (exit_code != 0)
+			ft_putstr_fd("minishell: ", 2);
+		if (exit_code != 0)
+			ft_putstr_fd(message, 2);
+		else
+			ft_putstr_fd(message, 1);
+		if (exit_code != 0)
+			ft_putstr_fd("\n", 2);
+		else
+			ft_putstr_fd("\n", 1);
+	}
+	clear_history();
+	rl_clear_history();
+	if (shell)
+		clear_pointers(shell);
+	ft_malloc(0, CLEAR);
+	exit(exit_code);
+}
+
+static void	check_exit(char *input, t_main *shell)
 {
 	if (!input)
 	{
 		ft_putstr_fd("exit\n", 1);
-		clear_history();
-		rl_clear_history();
-		ft_malloc(0, CLEAR);
-		exit(exit_status(0, PULL));
-		return (1);
+		clear_exit(shell, exit_status(0, PULL), NULL);
 	}
-	return (0);
+	return ;
 }
 
-void	check_ac(int ac)
+static void	check_ac(int ac)
 {
 	if (ac > 1)
 	{
-		ft_putstr_fd("minishell: no arguments please\n", 2);
-		exit(127);
+		clear_exit(NULL, 127, "no arguments please");
 	}
 	if (!isatty(STDIN_FILENO))
 	{
-		ft_putstr_fd("use terminal please.\n", 2);
-		exit(1);
+		clear_exit(NULL, 1, "use terminal please");
 	}
 }
 
-int	main(int ac , char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	t_main	shell;
 
-	(void)av;
 	check_ac(ac);
 	init_shell(&shell, env);
-	while(1)
+	ft_malloc((size_t) & shell, SET_SHELL);
+	while (av[0])
 	{
 		init_signal();
 		shell.input = readline("minishell> ");
-		if (check_exit(shell.input))
-			break ;
+		check_exit(shell.input, &shell);
 		if (shell.input)
 			add_history(shell.input);
 		if (check_syntax(shell.input))
-		{
-			exit_status(2, PUSH);
 			continue ;
-		}
 		shell.tkn_list = tokenize_input(shell.input);
 		if (!shell.tkn_list)
-		{
-			exit_status(0, PUSH);
 			continue ;
-		}
+		free(shell.input);
 		solve_expansion(shell.tkn_list, shell.env_list);
 		shell.cmd_list = parse_tokens_to_commands(shell.tkn_list);
-		if (shell.cmd_list)
-		{
-			if (!shell.cmd_list->next)
-			{
-				if (shell.cmd_list->args && shell.cmd_list->args[0])
-					execute_command(shell.cmd_list->args, shell.env_list);
-			}
-			else
-				execute_piped_commands(shell.cmd_list, shell.env_list);
-		}
-		if (shell.input)
-		{
-			free(shell.input);
-			shell.input = NULL;
-		}
-		shell.tkn_list = NULL;
-		shell.cmd_list = NULL;
-		//heredoc, append, redirection, heredoc sinyal, hata durumları, norm kuralları, leak,
+		if (shell.cmd_list && !shell.cmd_list->next)
+			execute_command(shell.cmd_list->args, shell.env_list);
+		else if (shell.cmd_list)
+			execute_piped_commands(shell.cmd_list, shell.env_list);
 	}
 }

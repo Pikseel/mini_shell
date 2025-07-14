@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   list.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:39:41 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/04 15:05:50 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:55:59 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../minishell.h"
 
 t_env	*lst_new(char *key, char *value)
 {
@@ -23,7 +23,7 @@ t_env	*lst_new(char *key, char *value)
 	return (new);
 }
 
-t_env	*lst_last(t_env *lst)
+static t_env	*lst_last(t_env *lst)
 {
 	if (!lst)
 		return (NULL);

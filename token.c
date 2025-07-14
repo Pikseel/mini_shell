@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 17:13:44 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/08 15:55:22 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/14 17:07:07 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ static t_tokentype	identify_token_type(char *str,	t_token *last)
 		return (WORD);
 	if (last && last->type == HERDOC)
 		return (HERKEY);
-	if (last && (last->type == R_IN || last->type == R_OUT || last->type == APPEND))
+	if (last && (last->type == R_IN || last->type == R_OUT
+			|| last->type == APPEND))
 		return (R_FILE);
 	if (ft_strcmp(str, "|") == 0)
 		return (PIPE);
@@ -94,4 +95,3 @@ t_token	*tokenize_input(char *input)
 	list = fill_token_list(input_arr);
 	return (list);
 }
-

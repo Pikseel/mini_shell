@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/10 13:00:00 by mecavus          #+#    #+#             */
-/*   Updated: 2025/07/10 13:00:00 by mecavus         ###   ########.fr       */
+/*   Created: 2025/07/10 13:00:00 by mecavus           #+#    #+#             */
+/*   Updated: 2025/07/14 16:47:01 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ void	builtin_unset(char **args, t_env **env_list)
 		exit_status(0, PUSH);
 		return ;
 	}
-	
 	i = 1;
 	while (args[i])
 	{
