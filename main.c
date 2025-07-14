@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 16:54:14 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/14 17:36:12 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,11 +58,11 @@ static void	check_ac(int ac)
 {
 	if (ac > 1)
 	{
-		clear_exit(NULL, 127, "no arguments please");
+		clear_exit(NULL, 127, "minishell requires no arguments.");
 	}
 	if (!isatty(STDIN_FILENO))
 	{
-		clear_exit(NULL, 1, "use terminal please");
+		clear_exit(NULL, 1, "minishell requires start from a terminal");
 	}
 }
 
