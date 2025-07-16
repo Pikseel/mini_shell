@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/14 16:46:56 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/16 17:49:37 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	builtin_pwd(void)
 	{
 		ft_putstr_fd(cwd, 1);
 		ft_putstr_fd("\n", 1);
-		free(cwd);
+		free(cwd);  // This is system malloc, needs manual free
 		exit_status(0, PUSH);
 	}
 	else

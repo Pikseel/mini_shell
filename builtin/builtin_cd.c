@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 13:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/14 16:46:31 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/16 17:50:01 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ static void	update_env_value(t_env *env_list, char *key, char *new_value)
 	{
 		if (ft_strcmp(env_list->key, key) == 0)
 		{
-			if (env_list->value)
-				free(env_list->value);
 			env_list->value = ft_strdup(new_value);
 			return ;
 		}

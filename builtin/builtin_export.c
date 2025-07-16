@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 13:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/15 12:32:50 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/16 17:46:37 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,9 @@ static int	update_existing_env(t_env **env_list, char *key, char *value)
 		{
 			if (value)
 			{
-				if (value)
-				{
-					new_value = ft_malloc(ft_strlen(value) + 1, ALLOC);
-					ft_strlcpy(new_value, value, ft_strlen(value) + 1);
-					current->value = new_value;
-				}
+				new_value = ft_malloc(ft_strlen(value) + 1, ALLOC);
+				ft_strlcpy(new_value, value, ft_strlen(value) + 1);
+				current->value = new_value;
 			}
 			return (1);
 		}
@@ -113,8 +110,6 @@ void	builtin_export(char **args, t_env **env_list)
 			if (!update_existing_env(env_list, key, value))
 			{
 				lst_addback(env_list, lst_new(key, value));
-				key = NULL;
-				value = NULL;
 			}
 		}
 		else
@@ -124,10 +119,6 @@ void	builtin_export(char **args, t_env **env_list)
 			ft_putstr_fd("': not a valid identifier\n", 2);
 			exit_status(1, PUSH);
 		}
-		if (key)
-			free(key);
-		if (value)
-			free(value);
 		i++;
 	}
 	exit_status(0, PUSH);
