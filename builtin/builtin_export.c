@@ -3,14 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
+/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 13:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/14 16:46:52 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/15 12:32:50 by emrozmen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+static	void	print_export_format(t_env *env)
+{
+	while (env)
+	{
+		ft_putstr_fd("declare -x ", 1);
+		ft_putstr_fd(env->key, 1);
+		if (env->value)
+		{
+			ft_putstr_fd("=\"", 1);
+			ft_putstr_fd(env->value, 1);
+			ft_putstr_fd("\"\n", 1);
+		}
+		else
+			ft_putstr_fd("\n", 1);
+		env = env->next;
+	}
+}
 
 static int	is_valid_identifier(char *str)
 {
@@ -83,7 +101,7 @@ void	builtin_export(char **args, t_env **env_list)
 
 	if (!args[1])
 	{
-		builtin_env(*env_list);
+		print_export_format(*env_list);
 		return ;
 	}
 	i = 1;

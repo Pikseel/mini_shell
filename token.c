@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
+/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 17:13:44 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 17:07:07 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/15 12:49:02 by emrozmen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_token	*tokenize_input(char *input)
 	char	**input_arr;
 	t_token	*list;
 
-	input_arr = ft_split(input);
+	input_arr = split_with_quotes(input);
 	if (!input_arr)
 		return (NULL);
 	list = fill_token_list(input_arr);

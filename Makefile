@@ -30,6 +30,7 @@ TOOLS_SRC = tools/ft_isalpha.c \
             tools/ft_putstr_fd.c \
             tools/ft_split.c \
             tools/ft_split_sep.c \
+            tools/ft_split_quotes.c \
             tools/ft_strchr.c \
             tools/ft_strcmp.c \
             tools/ft_strdup.c \

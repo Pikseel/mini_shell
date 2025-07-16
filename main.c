@@ -6,11 +6,54 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 17:36:12 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/16 11:59:23 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static char	*get_token_type_str(t_tokentype type)
+{
+	if (type == WORD)
+		return ("WORD");
+	if (type == PIPE)
+		return ("PIPE");
+	if (type == R_IN)
+		return ("R_IN");
+	if (type == R_OUT)
+		return ("R_OUT");
+	if (type == APPEND)
+		return ("APPEND");
+	if (type == HERDOC)
+		return ("HEREDOC");
+	if (type == HERKEY)
+		return ("HERKEY");
+	if (type == R_FILE)
+		return ("R_FILE");
+	if (type == EXPAND)
+		return ("EXPAND");
+	if (type == D_QUOT)
+		return ("D_QUOT");
+	if (type == S_QUOT)
+		return ("S_QUOT");
+	return ("UNKNOWN");
+}
+
+static void	print_token_list(t_token *head)
+{
+	ft_putstr_fd("\n", 1);
+	while (head)
+	{
+		ft_putstr_fd("Token value: ", 1);
+		ft_putstr_fd(head->value, 1);
+		ft_putstr_fd(" | Type: ", 1);
+		ft_putstr_fd(get_token_type_str(head->type), 1);
+		ft_putstr_fd(" | isRemoved: ", 1);
+		ft_putstr_fd(head->is_removed ? "true" : "false", 1);
+		ft_putstr_fd("\n", 1);
+		head = head->next;
+	}
+}
 
 static void	init_shell(t_main *shell, char **env)
 {
@@ -58,11 +101,11 @@ static void	check_ac(int ac)
 {
 	if (ac > 1)
 	{
-		clear_exit(NULL, 127, "minishell requires no arguments.");
+		clear_exit(NULL, 127, "no arguments please");
 	}
 	if (!isatty(STDIN_FILENO))
 	{
-		clear_exit(NULL, 1, "minishell requires start from a terminal");
+		clear_exit(NULL, 1, "use terminal please");
 	}
 }
 
@@ -86,7 +129,9 @@ int	main(int ac, char **av, char **env)
 		if (!shell.tkn_list)
 			continue ;
 		free(shell.input);
+		print_token_list(shell.tkn_list);
 		solve_expansion(shell.tkn_list, shell.env_list);
+		print_token_list(shell.tkn_list);
 		shell.cmd_list = parse_tokens_to_commands(shell.tkn_list);
 		if (shell.cmd_list && !shell.cmd_list->next)
 			execute_command(shell.cmd_list->args, shell.env_list);

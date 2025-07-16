@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
+/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 17:17:16 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/15 12:48:21 by emrozmen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ void		ft_putstr_fd(char *s, int fd);
 char		*ft_itoa(int n);
 char		**ft_split(char *s);
 char		**ft_split_sep(char *s, char c);
+char		**split_with_quotes(const char *s);
 int			ft_isalpha(int c);
 int			ft_isalnum(int c);
 int			ft_isdigit(int c);

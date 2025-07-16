@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
+/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:25:00 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 16:56:55 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/15 13:40:32 by emrozmen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,14 +90,17 @@ char	**env_list_to_array(t_env *env_list)
 	i = 0;
 	while (env_list)
 	{
-		temp = ft_strjoin(env_list->key, "=");
 		if (env_list->value)
-			env_array[i] = ft_strjoin(temp, env_list->value);
-		else
-			env_array[i] = ft_strjoin(temp, "");
-		temp = NULL;
+		{
+			temp = ft_strjoin(env_list->key, "=");
+			if (env_list->value)
+				env_array[i] = ft_strjoin(temp, env_list->value);
+			else
+				env_array[i] = ft_strjoin(temp, "");
+			temp = NULL;
+			i++;
+		}
 		env_list = env_list->next;
-		i++;
 	}
 	env_array[i] = NULL;
 	return (env_array);

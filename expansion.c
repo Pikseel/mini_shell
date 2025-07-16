@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/07 12:57:30 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 16:49:19 by mecavus          ###   ########.fr       */
+/*   Created: 2025/07/15 12:58:55 by emrozmen          #+#    #+#             */
+/*   Updated: 2025/07/16 11:58:01 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@ char	*get_env_value(t_env *env, const char *varname)
 
 static int	check_type(t_token tkn)
 {
-	if (tkn.type == EXPAND || tkn.type == D_QUOT || tkn.type == S_QUOT
-		|| (tkn.type == WORD && (ft_strchr(tkn.value, '$')
-				|| ft_strchr(tkn.value, '\'') || ft_strchr(tkn.value, '\"'))))
+	if (tkn.type == EXPAND || tkn.type == D_QUOT || tkn.type == S_QUOT)
+		return (1);
+	if (tkn.type == WORD && (ft_strchr(tkn.value, '$')
+		|| ft_strchr(tkn.value, '\'') || ft_strchr(tkn.value, '\"')))
 		return (1);
 	return (0);
 }
@@ -41,6 +42,7 @@ static char	*process_mixed_quotes(const char *value, t_env *env)
 
 	if (!value)
 		return (ft_strdup(""));
+
 	result = ft_strdup("");
 	i = 0;
 	in_single = 0;
@@ -84,14 +86,16 @@ void	solve_expansion(t_token *list, t_env *env)
 		if (check_type(*current))
 		{
 			expanded_value = process_mixed_quotes(current->value, env);
-			if ((current->type == WORD || current->type == EXPAND)
-				&& needs_word_splitting(expanded_value))
-				handle_word_splitting(current, expanded_value);
-			else
+			if (ft_strlen(expanded_value) == 0)
 			{
 				current->value = expanded_value;
 				current->type = WORD;
+				if (expanded_value[0] == '\0')
+					current->is_removed = 1;		
 			}
+			else if ((current->type == WORD || current->type == EXPAND)
+				&& needs_word_splitting(expanded_value))
+				handle_word_splitting(current, expanded_value);
 		}
 		current = next;
 	}
