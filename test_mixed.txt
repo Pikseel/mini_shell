@@ -1,5 +1,0 @@
-echo "hello"'world'
-echo 'hello'"world"
-echo "a"'b'"c"'d'
-echo $HOME"test"'more'
-exit

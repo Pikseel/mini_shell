@@ -35,7 +35,6 @@ static char	*remove_quotes(const char *value, t_tokentype type)
 	
 	if (type == S_QUOT || type == D_QUOT)
 	{
-		// Remove surrounding quotes
 		if (len >= 2 && value[0] == value[len-1] && 
 			(value[0] == '\'' || value[0] == '\"'))
 		{
@@ -58,6 +57,7 @@ static char	*process_mixed_content(const char *value, t_env *env, int *was_quote
 	int		i;
 	int		s_quot;  // Single quote flag
 	int		d_quot;  // Double quote flag
+	int		found_quotes; // Track if we actually found quotes
 
 	if (!value)
 		return (ft_strdup(""));
@@ -66,12 +66,13 @@ static char	*process_mixed_content(const char *value, t_env *env, int *was_quote
 	i = 0;
 	s_quot = 0;  // Initialize to 0
 	d_quot = 0;  // Initialize to 0
-	*was_quoted = 1; // Always consider this as quoted content since it came from a complex token
+	found_quotes = 0;  // Track if we encounter any quotes
 
 	while (value[i])
 	{
 		if (value[i] == '\'')
 		{
+			found_quotes = 1;  // We found quotes
 			if (d_quot)
 			{
 				// Inside double quotes: preserve the single quote literally
@@ -86,6 +87,7 @@ static char	*process_mixed_content(const char *value, t_env *env, int *was_quote
 		}
 		else if (value[i] == '\"')
 		{
+			found_quotes = 1;  // We found quotes
 			if (s_quot)
 			{
 				// Inside single quotes: preserve the double quote literally
@@ -113,21 +115,21 @@ static char	*process_mixed_content(const char *value, t_env *env, int *was_quote
 			result = append_char(result, value, &i);
 		}
 	}
+	
+	// Set was_quoted based on whether we actually found quotes
+	*was_quoted = found_quotes;
 	return (result);
 }
 
-static char	*expand_assignment(const char *value, t_env *env)
+static char	*expand_assignment(const char *value, t_env *env, int *was_quoted)
 {
 	char	*eq_pos;
 	char	*var_name;
 	char	*var_value;
 	char	*expanded_value;
 	char	*result;
-	int		was_quoted;
 
 	eq_pos = ft_strchr((char *)value, '=');
-	if (!eq_pos)
-		return (ft_strdup((char *)value));
 	
 	// Get variable name (everything before =)
 	var_name = ft_substr((char *)value, 0, eq_pos - value);
@@ -136,7 +138,7 @@ static char	*expand_assignment(const char *value, t_env *env)
 	var_value = ft_strdup(eq_pos + 1);
 	
 	// Expand the value part only
-	expanded_value = process_mixed_content(var_value, env, &was_quoted);
+	expanded_value = process_mixed_content(var_value, env, was_quoted);
 	
 	// Reconstruct the assignment
 	result = ft_strjoin(var_name, "=");
@@ -174,6 +176,7 @@ void	solve_expansion(t_token *list, t_env *env)
 	t_token	*current;
 	t_token	*next;
 	int		was_quoted;
+	char 	*inner_content;
 
 	current = list;
 	while (current)
@@ -183,7 +186,7 @@ void	solve_expansion(t_token *list, t_env *env)
 		// Handle variable assignments specially (don't word split)
 		if (current->type == WORD && is_assignment(current->value))
 		{
-			expanded_value = expand_assignment(current->value, env);
+			expanded_value = expand_assignment(current->value, env, &was_quoted);
 			current->value = expanded_value;
 			current->type = WORD;
 		}
@@ -194,11 +197,11 @@ void	solve_expansion(t_token *list, t_env *env)
 			current->value = expanded_value;
 			current->type = WORD;
 		}
-		// Handle simple double quotes (pure double quote tokens) 
+		// Handle simple double quotes (pure double quote tokens)
 		else if (current->type == D_QUOT)
 		{
 			// For D_QUOT tokens, first remove outer quotes, then process content
-			char *inner_content = remove_quotes(current->value, D_QUOT);
+			inner_content = remove_quotes(current->value, D_QUOT);
 			expanded_value = process_mixed_content(inner_content, env, &was_quoted);
 			current->value = expanded_value;
 			current->type = WORD;

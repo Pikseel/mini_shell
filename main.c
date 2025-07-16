@@ -6,14 +6,13 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/16 15:14:36 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/16 17:32:04 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-static char	*get_token_type_str(t_tokentype type)
+/*static char	*get_token_type_str(t_tokentype type)
 {
 	if (type == WORD)
 		return ("WORD");
@@ -39,9 +38,7 @@ static char	*get_token_type_str(t_tokentype type)
 		return ("S_QUOT");
 	return ("UNKNOWN");
 }
-*/
 
-/*
 static void	print_token_list(t_token *head)
 {
 	ft_putstr_fd("\n", 1);
@@ -56,8 +53,7 @@ static void	print_token_list(t_token *head)
 		ft_putstr_fd("\n", 1);
 		head = head->next;
 	}
-}
-*/
+}*/
 
 static void	init_shell(t_main *shell, char **env)
 {
@@ -134,7 +130,9 @@ int	main(int ac, char **av, char **env)
 		if (!shell.tkn_list)
 			continue ;
 		free(shell.input);
+//print_token_list(shell.tkn_list);
 		solve_expansion(shell.tkn_list, shell.env_list);
+//print_token_list(shell.tkn_list);
 		shell.cmd_list = parse_tokens_to_commands(shell.tkn_list);
 		if (shell.cmd_list && !shell.cmd_list->next)
 			execute_command(shell.cmd_list->args, shell.env_list);
@@ -142,3 +140,4 @@ int	main(int ac, char **av, char **env)
 			execute_piped_commands(shell.cmd_list, shell.env_list);
 	}
 }
+// "[]"export PREFIX="test_"; echo ${PREFIX}file ve "export PREFIX="test_"; echo ${PREFIX}file" inputu double free veriyor

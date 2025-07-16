@@ -1,6 +1,0 @@
-echo ""
-echo ''
-echo ""''
-echo ''"" 
-echo $USER"'$HOME'"
-exit
