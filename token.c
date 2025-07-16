@@ -3,17 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 17:13:44 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/15 12:49:02 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/16 15:15:38 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static int	has_mixed_quotes(const char *str)
+{
+	int	has_single = 0;
+	int	has_double = 0;
+	int	i = 0;
+
+	while (str[i])
+	{
+		if (str[i] == '\'')
+			has_single = 1;
+		else if (str[i] == '\"')
+			has_double = 1;
+		i++;
+	}
+	return (has_single && has_double);
+}
+
 static t_tokentype	identify_token_type(char *str,	t_token *last)
 {
+	int	len;
+
 	if (!str || !*str)
 		return (WORD);
 	if (last && last->type == HERDOC)
@@ -31,12 +50,15 @@ static t_tokentype	identify_token_type(char *str,	t_token *last)
 		return (R_IN);
 	if (ft_strcmp(str, ">") == 0)
 		return (R_OUT);
+	len = ft_strlen(str);
+	if (has_mixed_quotes(str))
+		return (EXPAND);
+	if (str[0] == '\'' && str[len-1] == '\'' && len >= 2)
+		return (S_QUOT); 
+	if (str[0] == '\"' && str[len-1] == '\"' && len >= 2)
+		return (D_QUOT);
 	if (str[0] == '$')
 		return (EXPAND);
-	if (str[0] == '\"')
-		return (D_QUOT);
-	if (str[0] == '\'')
-		return (S_QUOT);
 	return (WORD);
 }
 

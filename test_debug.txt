@@ -1,0 +1,2 @@
+echo "'debug'"'""'$HOME'""'"'debug'"
+exit

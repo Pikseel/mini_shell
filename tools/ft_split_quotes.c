@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split_quotes.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 12:47:41 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/15 13:04:35 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/16 15:06:02 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,25 @@ static int	word_len(const char *s)
 	while (s[len])
 	{
 		if (!quote && (s[len] == '\'' || s[len] == '\"'))
+		{
 			quote = s[len];
+			len++;
+		}
 		else if (quote && s[len] == quote)
+		{
 			quote = 0;
+			len++;
+			// Check if we should continue concatenating
+			// Continue only if the next char is another quote or non-whitespace
+			if (s[len] && !is_whitespace(s[len]))
+				continue;
+			else
+				break;
+		}
 		else if (!quote && is_whitespace(s[len]))
 			break;
-		len++;
+		else
+			len++;
 	}
 	return (len);
 }
@@ -56,20 +69,15 @@ static char	*extract_word(const char *s, int len)
 {
 	char	*word = ft_malloc(len + 1, ALLOC);
 	int		i = 0;
-	int		j = 0;
-	char	quote = 0;
 
+	// Keep quotes intact - don't remove them here
+	// The expansion phase will handle quote removal
 	while (i < len)
 	{
-		if (!quote && (s[i] == '\'' || s[i] == '\"'))
-			quote = s[i];
-		else if (quote && s[i] == quote)
-			quote = 0;
-		else
-			word[j++] = s[i];
+		word[i] = s[i];
 		i++;
 	}
-	word[j] = '\0';
+	word[i] = '\0';
 	return (word);
 }
 

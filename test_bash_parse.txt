@@ -1,0 +1,4 @@
+set -- "''"'""'$HOME'""'"''"
+echo $1
+echo ${#1}
+exit

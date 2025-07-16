@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/14 17:01:16 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/16 12:15:09 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,3 +134,9 @@ void	execute_command(char **args, t_env *env_list)
 	else
 		execute_external(args, env_list);
 }
+
+/*******************************************************************************************************/
+// export AKF="ho -n" calısıyor,
+// ardından export CVS=$AKF => hatalı: CVS = ho atanıyor ama -n ayrılıyor içeri almıyor hata veriyor.
+/*******************************************************************************************************/
+//
