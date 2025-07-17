@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/16 17:38:50 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/17 16:57:49 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ int	main(int ac, char **av, char **env)
 //print_token_list(shell.tkn_list);
 		solve_expansion(shell.tkn_list, shell.env_list);
 //print_token_list(shell.tkn_list);
-		shell.cmd_list = parse_tokens_to_commands(shell.tkn_list);
+		shell.cmd_list = parse_tokens_to_commands(shell.tkn_list, shell.env_list);
 		if (shell.cmd_list && !shell.cmd_list->next)
 			execute_command(shell.cmd_list->args, shell.env_list);
 		else if (shell.cmd_list)

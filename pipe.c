@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/14 17:25:52 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/17 16:57:49 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ void	execute_piped_commands(t_command *cmd_list, t_env *env_list)
 			close(current->output_fd);
 		current = current->next;
 	}
+	cleanup_heredoc_files(cmd_list);
 	i = 0;
 	while (i < cmd_count)
 	{

@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/16 12:15:09 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/17 16:43:20 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ static void	execute_external(char **args, t_env *env_list)
 	pid = fork();
 	if (pid == 0)
 	{
+		execve_signal();
 		if (execve(cmd_path, args, env_array) == -1)
 		{
 			perror("minishell");
@@ -118,9 +119,24 @@ static void	execute_external(char **args, t_env *env_list)
 	{
 		cmd_path = NULL;
 		free_env_array(env_array);
+		ignore_signal();
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			exit_status(WEXITSTATUS(status), PUSH);
+		else if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+			{
+				ft_putstr_fd("\n", 1);
+				exit_status(130, PUSH);
+			}
+			else if (WTERMSIG(status) == SIGQUIT)
+			{
+				ft_putstr_fd("Quit (core dumped)\n", 1);
+				exit_status(131, PUSH);
+			}
+		}
+		init_signal();
 	}
 }
 

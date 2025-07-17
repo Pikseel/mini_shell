@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:50:30 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 16:31:47 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/17 16:43:20 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,4 +41,16 @@ void	init_signal(void)
 {
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &handler);
+}
+
+void	ignore_signal(void)
+{
+	signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, SIG_IGN);
+}
+
+void	execve_signal(void)
+{
+	signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
 }

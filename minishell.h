@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/15 12:48:21 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/17 16:57:49 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,8 @@ char		**env_list_to_array(t_env *env_list);
 char		*get_env_value(t_env *env, const char *varname);
 
 void		init_signal(void);
+void		ignore_signal(void);
+void		execve_signal(void);
 int			exit_status(int status, int flag);
 
 t_token		*tokenize_input(char *input);
@@ -136,7 +138,7 @@ char		*append_char(char *result, const char *value, int *i);
 int			needs_word_splitting(char *expanded_value);
 void		handle_word_splitting(t_token *current, char *expanded_value);
 
-t_command	*parse_tokens_to_commands(t_token *tokens);
+t_command	*parse_tokens_to_commands(t_token *tokens, t_env *env_list);
 void		execute_command(char **args, t_env *env_list);
 void		execute_piped_commands(t_command *cmd_list, t_env *env_list);
 
@@ -149,5 +151,11 @@ void		builtin_env(t_env *env_list);
 void		builtin_export(char **args, t_env **env_list);
 void		builtin_unset(char **args, t_env **env_list);
 void		builtin_exit(char **args);
+
+int			handle_heredoc(t_token *current, t_env *env_list);
+char		*process_heredoc_delimiter(char *delimiter);
+void		heredoc_signal_handler(int sig);
+void		init_heredoc_signal(void);
+void		cleanup_heredoc_files(t_command *cmd_list);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/16 12:00:52 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/17 16:57:49 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,81 @@ static t_command	*create_command(void)
 	return (cmd);
 }
 
+static void	handle_redirections(t_token *current, t_command *cmd, t_env *env_list)
+{
+	int	fd;
+
+	while (current && current->type != PIPE)
+	{
+		if (current->type == R_IN)
+		{
+			if (current->next && current->next->type == R_FILE)
+			{
+				fd = open(current->next->value, O_RDONLY);
+				if (fd == -1)
+				{
+					perror("minishell");
+					return ;
+				}
+				if (cmd->input_fd != STDIN_FILENO)
+					close(cmd->input_fd);
+				cmd->input_fd = fd;
+				current->next->is_removed = 1;
+			}
+		}
+		else if (current->type == R_OUT)
+		{
+			if (current->next && current->next->type == R_FILE)
+			{
+				fd = open(current->next->value, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+				if (fd == -1)
+				{
+					perror("minishell");
+					return ;
+				}
+				if (cmd->output_fd != STDOUT_FILENO)
+					close(cmd->output_fd);
+				cmd->output_fd = fd;
+				current->next->is_removed = 1;
+			}
+		}
+		else if (current->type == APPEND)
+		{
+			if (current->next && current->next->type == R_FILE)
+			{
+				fd = open(current->next->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
+				if (fd == -1)
+				{
+					perror("minishell");
+					return ;
+				}
+				if (cmd->output_fd != STDOUT_FILENO)
+					close(cmd->output_fd);
+				cmd->output_fd = fd;
+				current->next->is_removed = 1;
+			}
+		}
+		else if (current->type == HERDOC)
+		{
+			if (current->next && current->next->type == HERKEY)
+			{
+				fd = handle_heredoc(current, env_list);
+				if (fd == -1)
+				{
+					exit_status(130, PUSH);
+					return ;
+				}
+				if (cmd->input_fd != STDIN_FILENO)
+					close(cmd->input_fd);
+				cmd->input_fd = fd;
+				current->next->is_removed = 1;
+			}
+		}
+		current->is_removed = 1;
+		current = current->next;
+	}
+}
+
 static void	add_command(t_command **cmd_list, t_command *new_cmd)
 {
 	t_command	*current;
@@ -56,11 +131,12 @@ static void	add_command(t_command **cmd_list, t_command *new_cmd)
 	current->next = new_cmd;
 }
 
-t_command	*parse_tokens_to_commands(t_token *tokens)
+t_command	*parse_tokens_to_commands(t_token *tokens, t_env *env_list)
 {
 	t_command	*cmd_list;
 	t_command	*current_cmd;
 	t_token		*current_tkn;
+	t_token		*start_tkn;
 	int			ac;
 	int			i;
 
@@ -69,11 +145,18 @@ t_command	*parse_tokens_to_commands(t_token *tokens)
 	while (current_tkn)
 	{
 		current_cmd = create_command();
-		ac = count_word_tokens(current_tkn);
+		start_tkn = current_tkn;
+		
+		// Handle redirections first
+		handle_redirections(current_tkn, current_cmd, env_list);
+		
+		// Count remaining word tokens
+		ac = count_word_tokens(start_tkn);
 		if (ac > 0)
 		{
 			current_cmd->args = ft_malloc(sizeof(char *) * (ac + 1), ALLOC);
 			i = 0;
+			current_tkn = start_tkn;
 			while (current_tkn && current_tkn->type != PIPE)
 			{
 				if (current_tkn->type == WORD && current_tkn->is_removed == 0 && i < ac)
@@ -86,6 +169,11 @@ t_command	*parse_tokens_to_commands(t_token *tokens)
 			}
 			current_cmd->args[i] = NULL;
 		}
+		
+		// Skip to next pipe
+		while (current_tkn && current_tkn->type != PIPE)
+			current_tkn = current_tkn->next;
+		
 		add_command(&cmd_list, current_cmd);
 		if (current_tkn && current_tkn->type == PIPE)
 			current_tkn = current_tkn->next;

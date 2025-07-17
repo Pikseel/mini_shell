@@ -9,6 +9,7 @@ SRC = main.c \
       expand_variable.c \
       expansion.c \
       garbage.c \
+      heredoc.c \
       parser.c \
       pipe.c \
       signal.c \
