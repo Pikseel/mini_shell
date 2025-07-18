@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:53:17 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 17:25:29 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 15:40:14 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static t_garbage	*lstlast_garbage(t_garbage *lst)
 	return (lst);
 }
 
-static void	add_garabage(t_garbage **lst, t_garbage *new)
+static void	add_garbage(t_garbage **lst, t_garbage *new)
 {
 	if (!lst)
 		return ;
@@ -140,6 +140,6 @@ void	*ft_malloc(size_t size, int flag)
 		perror("malloc()");
 		clear_exit(main_shell, 1, NULL);
 	}
-	add_garabage(&garbage, new_garbage(ret));
+	add_garbage(&garbage, new_garbage(ret));
 	return (ret);
 }

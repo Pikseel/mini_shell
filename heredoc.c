@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 16:50:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/17 16:57:49 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:22:11 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,65 +31,74 @@ void	init_heredoc_signal(void)
 
 char	*process_heredoc_delimiter(char *delimiter)
 {
-	char	*processed;
-	int		len;
+	char	*result;
 	int		i;
-	int		j;
+	int		s_quot;
+	int		d_quot;
 
 	if (!delimiter)
 		return (NULL);
-	len = ft_strlen(delimiter);
-	if (len < 2)
+	if (ft_strlen(delimiter) == 0)
 		return (ft_strdup(delimiter));
-	
-	// Handle quoted delimiters
-	if ((delimiter[0] == '"' && delimiter[len-1] == '"') ||
-		(delimiter[0] == '\'' && delimiter[len-1] == '\''))
+
+	result = ft_strdup("");
+	i = 0;
+	s_quot = 0;
+	d_quot = 0;
+
+	while (delimiter[i])
 	{
-		// Remove outer quotes
-		processed = ft_malloc(len - 1, ALLOC);
-		i = 1;
-		j = 0;
-		while (i < len - 1)
-			processed[j++] = delimiter[i++];
-		processed[j] = '\0';
-		return (processed);
+		if (delimiter[i] == '\'')
+		{
+			if (d_quot)
+			{
+				result = append_char(result, delimiter, &i);
+			}
+			else
+			{
+				s_quot = !s_quot;
+				i++;
+			}
+		}
+		else if (delimiter[i] == '\"')
+		{
+			if (s_quot)
+			{
+				result = append_char(result, delimiter, &i);
+			}
+			else
+			{
+				d_quot = !d_quot;
+				i++;
+			}
+		}
+		else
+		{
+			result = append_char(result, delimiter, &i);
+		}
 	}
 	
-	// Handle mixed quotes like "'emre'" -> 'emre'
-	if (delimiter[0] == '"' && delimiter[len-1] == '"')
-	{
-		processed = ft_malloc(len - 1, ALLOC);
-		i = 1;
-		j = 0;
-		while (i < len - 1)
-			processed[j++] = delimiter[i++];
-		processed[j] = '\0';
-		return (processed);
-	}
-	
-	return (ft_strdup(delimiter));
+	return (result);
 }
 
 static int	should_expand_heredoc(char *original_delimiter)
 {
-	int	len;
+	int	i;
 	
 	if (!original_delimiter)
 		return (1);
-	len = ft_strlen(original_delimiter);
-	
-	// If delimiter was quoted, don't expand
-	if (len >= 2 && ((original_delimiter[0] == '"' && original_delimiter[len-1] == '"') ||
-		(original_delimiter[0] == '\'' && original_delimiter[len-1] == '\'')))
-		return (0);
-	
+	i = 0;
+	while (original_delimiter[i])
+	{
+		if (original_delimiter[i] == '"' || original_delimiter[i] == '\'')
+			return (0);
+		i++;
+	}
 	return (1);
 }
 
 static char	*expand_heredoc_line(char *line, t_env *env_list)
 {
-	char	*expanded;
 	char	*result;
 	int		i;
 	int		len;
@@ -105,21 +114,24 @@ static char	*expand_heredoc_line(char *line, t_env *env_list)
 	{
 		if (line[i] == '$' && i + 1 < len)
 		{
-			if (line[i + 1] == '?')
+			i++;
+			if (line[i] == '?')
 			{
-				expanded = handle_exit_status(result, &i);
-				result = expanded;
+				result = handle_exit_status(result, &i);
+			}
+			else if (ft_isalnum(line[i]) || line[i] == '_')
+			{
+				result = append_variable(result, line, &i, env_list);
 			}
 			else
 			{
-				expanded = append_variable(result, line, &i, env_list);
-				result = expanded;
+				result = append_char(result, "$", &i);
+				i--;
 			}
 		}
 		else
 		{
-			expanded = append_char(result, line, &i);
-			result = expanded;
+			result = append_char(result, line, &i);
 		}
 	}
 	
@@ -220,32 +232,7 @@ int	handle_heredoc(t_token *current, t_env *env_list)
 		unlink(filename);
 		return (-1);
 	}
-	
-	// Store the fd in the token for later use
 	current->fd_rdir = fd;
-	// Store filename for cleanup
 	current->value = filename;
-	
 	return (fd);
-}
-
-void	cleanup_heredoc_files(t_command *cmd_list)
-{
-	t_command	*current;
-
-	current = cmd_list;
-	while (current)
-	{
-		if (current->input_fd != STDIN_FILENO)
-		{
-			close(current->input_fd);
-			// If it's a heredoc file, unlink it
-			if (current->input_fd > 2)
-			{
-				// We can't directly know if it's a heredoc file
-				// but we can try to unlink files starting with /tmp/minishell_heredoc_
-			}
-		}
-		current = current->next;
-	}
 }

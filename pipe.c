@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/17 16:57:49 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:22:11 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ static void	setup_pipes(t_command *cmd_list)
 			shell = (t_main *)ft_malloc(0, GET_SHELL);
 			clear_exit(shell, 1, "pipe error");
 		}
-		current->output_fd = pipe_fd[1];
-		next->input_fd = pipe_fd[0];
+		if (current->output_fd == STDOUT_FILENO)
+			current->output_fd = pipe_fd[1];
+		if (next->input_fd == STDIN_FILENO)
+			next->input_fd = pipe_fd[0];
 		current = next;
 	}
 }
@@ -59,7 +61,20 @@ static void	execute_piped_child(t_command *cmd_list, t_command *current,
 			close(close_cmd->output_fd);
 		close_cmd = close_cmd->next;
 	}
-	execute_command(current->args, env_list);
+	if (!current || !current->args || !current->args[0])
+		clear_exit(NULL, 1, NULL);
+	if (!ft_strcmp(current->args[0], "echo") || !ft_strcmp(current->args[0], "cd")
+		|| !ft_strcmp(current->args[0], "pwd") || !ft_strcmp(current->args[0], "export")
+		|| !ft_strcmp(current->args[0], "unset") || !ft_strcmp(current->args[0], "env")
+		|| !ft_strcmp(current->args[0], "exit"))
+	{
+		execute_builtin(current->args, &env_list);
+	}
+	else
+	{
+		execute_external_piped(current->args, env_list);
+	}
+	
 	clear_exit(NULL, exit_status(0, PULL), NULL);
 }
 
@@ -99,7 +114,6 @@ void	execute_piped_commands(t_command *cmd_list, t_env *env_list)
 			close(current->output_fd);
 		current = current->next;
 	}
-	cleanup_heredoc_files(cmd_list);
 	i = 0;
 	while (i < cmd_count)
 	{

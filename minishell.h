@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/17 16:57:49 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:22:11 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <errno.h>
-# include <string.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -64,7 +63,6 @@ typedef struct s_garbage
 {
 	void				*address;
 	struct s_garbage	*next;
-
 }	t_garbage;
 
 typedef struct s_env {
@@ -127,7 +125,6 @@ void		execve_signal(void);
 int			exit_status(int status, int flag);
 
 t_token		*tokenize_input(char *input);
-char		**tokens_to_args(t_token *tokens);
 
 void		solve_expansion(t_token *list, t_env *env);
 char		*handle_exit_status(char *result, int *i);
@@ -139,7 +136,9 @@ int			needs_word_splitting(char *expanded_value);
 void		handle_word_splitting(t_token *current, char *expanded_value);
 
 t_command	*parse_tokens_to_commands(t_token *tokens, t_env *env_list);
-void		execute_command(char **args, t_env *env_list);
+void		execute_builtin(char **args, t_env **env_list);
+void		execute_command(t_command *cmd, t_env *env_list);
+void		execute_external_piped(char **args, t_env *env_list);
 void		execute_piped_commands(t_command *cmd_list, t_env *env_list);
 
 int			check_syntax(char *s);
@@ -156,6 +155,5 @@ int			handle_heredoc(t_token *current, t_env *env_list);
 char		*process_heredoc_delimiter(char *delimiter);
 void		heredoc_signal_handler(int sig);
 void		init_heredoc_signal(void);
-void		cleanup_heredoc_files(t_command *cmd_list);
 
 #endif

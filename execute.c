@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/17 16:43:20 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:11:58 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-static void	execute_builtin(char **args, t_env **env_list)
+void	execute_builtin(char **args, t_env **env_list)
 {
 	if (!ft_strcmp(args[0], "echo"))
 		builtin_echo(args);
@@ -140,19 +140,65 @@ static void	execute_external(char **args, t_env *env_list)
 	}
 }
 
-void	execute_command(char **args, t_env *env_list)
+void	execute_external_piped(char **args, t_env *env_list)
 {
-	if (!ft_strcmp(args[0], "echo") || !ft_strcmp(args[0], "cd")
-		|| !ft_strcmp(args[0], "pwd") || !ft_strcmp(args[0], "export")
-		|| !ft_strcmp(args[0], "unset") || !ft_strcmp(args[0], "env")
-		|| !ft_strcmp(args[0], "exit"))
-		execute_builtin(args, &env_list);
-	else
-		execute_external(args, env_list);
+	char	**env_array;
+	char	*cmd_path;
+
+	cmd_path = find_command_path(args[0], env_list);
+	if (!cmd_path)
+	{
+		ft_putstr_fd("minishell: command not found: ", 2);
+		ft_putstr_fd(args[0], 2);
+		ft_putstr_fd("\n", 2);
+		clear_exit(NULL, 127, NULL);
+	}
+	env_array = env_list_to_array(env_list);
+	execve_signal();
+	if (execve(cmd_path, args, env_array) == -1)
+	{
+		perror("minishell");
+		clear_exit(NULL, 126, NULL);
+	}
 }
 
-/*******************************************************************************************************/
-// export AKF="ho -n" calısıyor,
-// ardından export CVS=$AKF => hatalı: CVS = ho atanıyor ama -n ayrılıyor içeri almıyor hata veriyor.
-/*******************************************************************************************************/
-//
+void	execute_command(t_command *cmd, t_env *env_list)
+{
+	int	saved_stdin;
+	int	saved_stdout;
+	
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return ;
+	
+	// Save original stdin/stdout
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+	
+	// Apply input redirection
+	if (cmd->input_fd != STDIN_FILENO)
+	{
+		dup2(cmd->input_fd, STDIN_FILENO);
+		close(cmd->input_fd);
+	}
+	
+	// Apply output redirection
+	if (cmd->output_fd != STDOUT_FILENO)
+	{
+		dup2(cmd->output_fd, STDOUT_FILENO);
+		close(cmd->output_fd);
+	}
+	
+	if (!ft_strcmp(cmd->args[0], "echo") || !ft_strcmp(cmd->args[0], "cd")
+		|| !ft_strcmp(cmd->args[0], "pwd") || !ft_strcmp(cmd->args[0], "export")
+		|| !ft_strcmp(cmd->args[0], "unset") || !ft_strcmp(cmd->args[0], "env")
+		|| !ft_strcmp(cmd->args[0], "exit"))
+		execute_builtin(cmd->args, &env_list);
+	else
+		execute_external(cmd->args, env_list);
+	
+	// Restore original stdin/stdout
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
+}

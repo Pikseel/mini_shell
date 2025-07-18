@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa_atoi.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 12:29:16 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/07 12:29:49 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/18 15:40:15 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,17 @@ char	*ft_itoa(int n)
 	int		flag;
 	char	*s;
 
-	(1) && (flag = 0, num = n, len = lenght(num));
+	flag = 0;
+	num = n;
+	len = lenght(num);
 	if (!n)
 		return (ft_strdup("0"));
 	else if (num < 0)
-		(1) && (len++, flag = 1, num *= -1);
+	{
+		len++;
+		flag = 1;
+		num *= -1;
+	}
 	s = ft_malloc (len + 1, ALLOC);
 	if (flag == 1)
 		s[0] = '-';
@@ -72,9 +78,15 @@ int	ft_atoi(const char *str, int *flag)
 	{
 		res = res * 10 + (*(str++) - 48);
 		if (res > 9223372036854775807 && sig == -1)
-			return (*flag = 1, 0);
+		{
+			*flag = 1;
+			return (0);
+		}
 		if (res > 9223372036854775807 && sig == 1)
-			return (*flag = 1, -1);
+		{
+			*flag = 1;
+			return (-1);
+		}
 	}
 	*flag = 0;
 	return ((int)res * sig);
