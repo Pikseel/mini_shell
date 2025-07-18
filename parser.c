@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/18 15:40:14 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:47:09 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,17 +149,12 @@ t_command	*parse_tokens_to_commands(t_token *tokens, t_env *env_list)
 	{
 		current_cmd = create_command();
 		start_tkn = current_tkn;
-		
-		// Handle redirections first
 		handle_redirections(current_tkn, current_cmd, env_list);
-		
-		// Count remaining word tokens from start
 		ac = count_word_tokens(start_tkn);
 		if (ac > 0)
 		{
 			current_cmd->args = ft_malloc(sizeof(char *) * (ac + 1), ALLOC);
 			i = 0;
-			// Reset to start and collect words
 			current_tkn = start_tkn;
 			while (current_tkn && current_tkn->type != PIPE)
 			{
@@ -175,12 +170,10 @@ t_command	*parse_tokens_to_commands(t_token *tokens, t_env *env_list)
 		}
 		else
 		{
-			// No args, just skip to next pipe
 			current_tkn = start_tkn;
 			while (current_tkn && current_tkn->type != PIPE)
 				current_tkn = current_tkn->next;
 		}
-		
 		add_command(&cmd_list, current_cmd);
 		if (current_tkn && current_tkn->type == PIPE)
 			current_tkn = current_tkn->next;

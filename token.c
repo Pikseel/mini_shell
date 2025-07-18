@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 17:13:44 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/16 15:15:38 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:43:06 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static t_tokentype	identify_token_type(char *str,	t_token *last)
 	if (has_mixed_quotes(str))
 		return (EXPAND);
 	if (str[0] == '\'' && str[len-1] == '\'' && len >= 2)
-		return (S_QUOT); 
+		return (S_QUOT);
 	if (str[0] == '\"' && str[len-1] == '\"' && len >= 2)
 		return (D_QUOT);
 	if (str[0] == '$')

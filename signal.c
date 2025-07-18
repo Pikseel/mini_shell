@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:50:30 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/18 15:40:14 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 18:25:51 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,15 @@ int	exit_status(int status, int flag)
 static void	handler(int sig)
 {
 	(void)sig;
-	rl_on_new_line();
+	// rl_on_new_line();
+	// ft_putstr_fd("\n", 1);
+	// rl_redisplay();
+	// rl_replace_line("", 1);
 	ft_putstr_fd("\n", 1);
-	rl_redisplay();
 	rl_replace_line("", 1);
+	rl_on_new_line();
+	rl_redisplay();
+	
 	exit_status(130, PUSH);
 }
 

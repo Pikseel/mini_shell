@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:00:00 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/16 12:40:36 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:48:48 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,9 @@ static char	**prepare_words_for_splitting(char *expanded_value)
 
 	if (!expanded_value)
 		return (NULL);
-		
 	temp_str = ft_strdup(expanded_value);
 	if (!temp_str)
 		return (NULL);
-		
 	words = ft_split(temp_str);
 	return (words);
 }
@@ -90,26 +88,19 @@ void	handle_word_splitting(t_token *current, char *expanded_value)
 
 	if (!needs_word_splitting(expanded_value))
 	{
-		// No splitting needed, just update the value
 		current->value = expanded_value;
 		current->type = WORD;
 		return ;
 	}
-
 	words = prepare_words_for_splitting(expanded_value);
 	if (!words || !words[0])
 	{
-		// No words found after splitting, set empty value
 		current->value = ft_strdup("");
 		current->type = WORD;
 		current->is_removed = 1;
 		return ;
 	}
-	
-	// Set first word to current token
 	current->value = ft_strdup(words[0]);
 	current->type = WORD;
-	
-	// Insert remaining words as new tokens
 	insert_remaining_words(current, words);
 }

@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 12:58:55 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/18 15:40:14 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 17:43:34 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,31 +182,25 @@ void	solve_expansion(t_token *list, t_env *env)
 	while (current)
 	{
 		next = current->next;
-		
-		// Handle variable assignments specially (don't word split)
 		if (current->type == WORD && is_assignment(current->value))
 		{
 			expanded_value = expand_assignment(current->value, env, &was_quoted);
 			current->value = expanded_value;
 			current->type = WORD;
 		}
-		// Handle simple single quotes (pure single quote tokens)
 		else if (current->type == S_QUOT)
 		{
 			expanded_value = remove_quotes(current->value, S_QUOT);
 			current->value = expanded_value;
 			current->type = WORD;
 		}
-		// Handle simple double quotes (pure double quote tokens)
 		else if (current->type == D_QUOT)
 		{
-			// For D_QUOT tokens, first remove outer quotes, then process content
 			inner_content = remove_quotes(current->value, D_QUOT);
 			expanded_value = process_mixed_content(inner_content, env, &was_quoted);
 			current->value = expanded_value;
 			current->type = WORD;
 		}
-		// Handle expansion tokens and complex mixed content
 		else if (current->type == EXPAND || 
 			(current->type == WORD && has_quotes_or_expansion(current->value)))
 		{
@@ -219,15 +213,11 @@ void	solve_expansion(t_token *list, t_env *env)
 			}
 			else if (was_quoted)
 			{
-				// If content was quoted, treat as single word (no word splitting)
 				current->value = expanded_value;
 				current->type = WORD;
 			}
 			else if (needs_word_splitting(expanded_value))
-			{
-				// Only split if content wasn't originally quoted
 				handle_word_splitting(current, expanded_value);
-			}
 			else
 			{
 				current->value = expanded_value;

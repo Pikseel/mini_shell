@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/18 17:22:11 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/18 18:16:59 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,3 +94,5 @@ int	main(int ac, char **av, char **env)
 			execute_piped_commands(shell.cmd_list, shell.env_list);
 	}
 }
+
+// cat << eof sinyal yakalayamiyor
