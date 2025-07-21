@@ -6,18 +6,11 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:23:07 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 17:31:48 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 18:45:39 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-typedef struct s_delimiter_state
-{
-	int	s_quot;
-	int	d_quot;
-	int	i;
-}	t_delimiter_state;
 
 static char	*handle_quote_in_delimiter(char *result, char *delimiter,
 				t_delimiter_state *state)

@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 15:45:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 17:39:32 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 19:00:20 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,4 @@ void	populate_command_args(t_command *cmd, t_token *start_tkn, int ac)
 		current_tkn = current_tkn->next;
 	}
 	cmd->args[i] = NULL;
-}
-
-t_token	*skip_to_next_pipe(t_token *current_tkn)
-{
-	while (current_tkn && current_tkn->type != PIPE)
-		current_tkn = current_tkn->next;
-	return (current_tkn);
 }

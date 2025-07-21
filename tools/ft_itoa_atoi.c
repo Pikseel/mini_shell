@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 12:29:16 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 16:10:10 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 19:11:20 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,12 +68,12 @@ char	*ft_itoa(int n)
 
 static int	check_overflow(unsigned long res, int sig, int *flag)
 {
-	if (res > LONG_MAX && sig == -1)
+	if (res > 9223372036854775807 && sig == -1)
 	{
 		*flag = 1;
 		return (0);
 	}
-	if (res > LONG_MAX && sig == 1)
+	if (res > 9223372036854775807 && sig == 1)
 	{
 		*flag = 1;
 		return (-1);

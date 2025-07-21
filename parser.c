@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 17:39:32 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 19:16:06 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ t_command	*parse_tkn_to_cmds(t_token *tokens, t_env *env_list)
 	while (current_tkn)
 	{
 		current_cmd = process_single_command(current_tkn, env_list);
-		current_tkn = skip_to_next_pipe(current_tkn);
+		while (current_tkn && current_tkn->type != PIPE)
+			current_tkn = current_tkn->next;
 		add_command(&cmd_list, current_cmd);
 		if (current_tkn && current_tkn->type == PIPE)
 			current_tkn = current_tkn->next;

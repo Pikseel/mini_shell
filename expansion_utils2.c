@@ -6,19 +6,11 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:01:18 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 16:10:10 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 18:55:12 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-typedef struct s_quote_state
-{
-	int	s_quot;
-	int	d_quot;
-	int	found_quotes;
-	int	i;
-}	t_quote_state;
 
 static char	*handle_single_quote(char *result, const char *value,
 		t_quote_state *state)

@@ -6,18 +6,11 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:26:24 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/14 14:33:02 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 19:05:07 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	skip_spaces(char *s, int i)
-{
-	while (s[i] && ft_is_space(s[i]))
-		i++;
-	return (i);
-}
 
 static int	acttual_len(char *s, int i)
 {
