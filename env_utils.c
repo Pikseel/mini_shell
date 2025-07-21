@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:25:00 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/18 15:40:14 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 15:59:13 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ t_env	*init_env_list(char **env)
 	t_env	*env_list;
 	char	*key;
 	char	*value;
+	int		flag;
+	int		shlvl;
 
 	env_list = NULL;
 	if (!env || !*env)
@@ -59,8 +61,8 @@ t_env	*init_env_list(char **env)
 		parse_env_entry(*env, &key, &value);
 		if (ft_strcmp(key, "SHLVL") == 0 && value)
 		{
-			int flag = 0;
-			int shlvl = ft_atoi(value, &flag) + 1;
+			flag = 0;
+			shlvl = ft_atoi(value, &flag) + 1;
 			value = ft_itoa(shlvl);
 		}
 		lst_addback(&env_list, lst_new(key, value));

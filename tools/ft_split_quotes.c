@@ -6,42 +6,51 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 12:47:41 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/16 15:06:02 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 15:43:34 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static int	is_whitespace(char c)
+static int	handle_quote(const char *s, int len, char *quote, int flag)
 {
-	return (c == ' ' || c == '\t' || c == '\n');
+	if (flag == START)
+	{
+		*quote = s[len];
+		return (len + 1);
+	}
+	else
+	{
+		*quote = 0;
+		len++;
+		if (s[len] && !ft_is_space(s[len]))
+			return (len);
+		else
+			return (-1);
+	}
 }
 
 static int	word_len(const char *s)
 {
-	int		len = 0;
-	char	quote = 0;
+	int		len;
+	char	quote;
+	int		result;
 
+	len = 0;
+	quote = 0;
 	while (s[len])
 	{
 		if (!quote && (s[len] == '\'' || s[len] == '\"'))
-		{
-			quote = s[len];
-			len++;
-		}
+			len = handle_quote(s, len, &quote, START);
 		else if (quote && s[len] == quote)
 		{
-			quote = 0;
-			len++;
-			// Check if we should continue concatenating
-			// Continue only if the next char is another quote or non-whitespace
-			if (s[len] && !is_whitespace(s[len]))
-				continue;
-			else
-				break;
+			result = handle_quote(s, len, &quote, END);
+			if (result == -1)
+				break ;
+			len = result;
 		}
-		else if (!quote && is_whitespace(s[len]))
-			break;
+		else if (!quote && ft_is_space(s[len]))
+			break ;
 		else
 			len++;
 	}
@@ -50,11 +59,12 @@ static int	word_len(const char *s)
 
 static int	count_words(const char *s)
 {
-	int count = 0;
+	int	count;
 
+	count = 0;
 	while (*s)
 	{
-		while (is_whitespace(*s))
+		while (ft_is_space(*s))
 			s++;
 		if (*s)
 		{
@@ -67,11 +77,11 @@ static int	count_words(const char *s)
 
 static char	*extract_word(const char *s, int len)
 {
-	char	*word = ft_malloc(len + 1, ALLOC);
-	int		i = 0;
+	char	*word;
+	int		i;
 
-	// Keep quotes intact - don't remove them here
-	// The expansion phase will handle quote removal
+	i = 0;
+	word = ft_malloc(len + 1, ALLOC);
 	while (i < len)
 	{
 		word[i] = s[i];
@@ -83,17 +93,21 @@ static char	*extract_word(const char *s, int len)
 
 char	**split_with_quotes(const char *s)
 {
-	int		i = 0;
-	int		word_count = count_words(s);
-	char	**result = ft_malloc(sizeof(char *) * (word_count + 1), ALLOC);
+	int		i;
+	int		word_count;
+	char	**result;
+	int		len;
 
+	i = 0;
+	word_count = count_words(s);
+	result = ft_malloc(sizeof(char *) * (word_count + 1), ALLOC);
 	while (*s)
 	{
-		while (is_whitespace(*s))
+		while (ft_is_space(*s))
 			s++;
 		if (*s)
 		{
-			int len = word_len(s);
+			len = word_len(s);
 			result[i++] = extract_word(s, len);
 			s += len;
 		}

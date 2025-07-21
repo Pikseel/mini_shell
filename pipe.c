@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/18 17:22:11 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 15:43:34 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,8 @@ static void	setup_pipes(t_command *cmd_list)
 	}
 }
 
-static void	execute_piped_child(t_command *cmd_list, t_command *current,
-	t_env *env_list)
+static void	setup_child_fds(t_command *current)
 {
-	t_command	*close_cmd;
-
 	if (current->input_fd != STDIN_FILENO)
 	{
 		dup2(current->input_fd, STDIN_FILENO);
@@ -52,6 +49,12 @@ static void	execute_piped_child(t_command *cmd_list, t_command *current,
 		dup2(current->output_fd, STDOUT_FILENO);
 		close(current->output_fd);
 	}
+}
+
+static void	close_unused_fds(t_command *cmd_list, t_command *current)
+{
+	t_command	*close_cmd;
+
 	close_cmd = cmd_list;
 	while (close_cmd)
 	{
@@ -61,66 +64,34 @@ static void	execute_piped_child(t_command *cmd_list, t_command *current,
 			close(close_cmd->output_fd);
 		close_cmd = close_cmd->next;
 	}
+}
+
+void	execute_piped_child(t_command *cmd_list, t_command *current,
+	t_env *env_list)
+{
+	if (current->redirect_failed)
+		clear_exit(NULL, 1, NULL);
+	setup_child_fds(current);
+	close_unused_fds(cmd_list, current);
 	if (!current || !current->args || !current->args[0])
 		clear_exit(NULL, 1, NULL);
-	if (!ft_strcmp(current->args[0], "echo") || !ft_strcmp(current->args[0], "cd")
-		|| !ft_strcmp(current->args[0], "pwd") || !ft_strcmp(current->args[0], "export")
-		|| !ft_strcmp(current->args[0], "unset") || !ft_strcmp(current->args[0], "env")
-		|| !ft_strcmp(current->args[0], "exit"))
-	{
+	if (is_builtin(current->args[0]))
 		execute_builtin(current->args, &env_list);
-	}
 	else
-	{
 		execute_external_piped(current->args, env_list);
-	}
-	
 	clear_exit(NULL, exit_status(0, PULL), NULL);
 }
 
 void	execute_piped_commands(t_command *cmd_list, t_env *env_list)
 {
-	pid_t		*pids;
-	t_command	*current;
-	int			cmd_count;
-	int			i;
-	int			status;
+	pid_t	*pids;
+	int		cmd_count;
 
-	cmd_count = 0;
-	current = cmd_list;
-	while (current)
-	{
-		cmd_count++;
-		current = current->next;
-	}
+	cmd_count = count_commands(cmd_list);
 	pids = ft_malloc(sizeof(pid_t) * cmd_count, ALLOC);
 	setup_pipes(cmd_list);
-	i = 0;
-	current = cmd_list;
-	while (current)
-	{
-		pids[i] = fork();
-		if (pids[i] == 0)
-			execute_piped_child(cmd_list, current, env_list);
-		i++;
-		current = current->next;
-	}
-	current = cmd_list;
-	while (current)
-	{
-		if (current->input_fd != STDIN_FILENO)
-			close(current->input_fd);
-		if (current->output_fd != STDOUT_FILENO)
-			close(current->output_fd);
-		current = current->next;
-	}
-	i = 0;
-	while (i < cmd_count)
-	{
-		waitpid(pids[i], &status, 0);
-		if (i == cmd_count - 1 && WIFEXITED(status))
-			exit_status(WEXITSTATUS(status), PUSH);
-		i++;
-	}
+	fork_all_processes(cmd_list, pids, env_list);
+	close_all_pipes(cmd_list);
+	wait_all_processes(pids, cmd_count);
 	pids = NULL;
 }

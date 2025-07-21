@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 13:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/16 17:46:37 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 13:40:50 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,25 +101,20 @@ void	builtin_export(char **args, t_env **env_list)
 		print_export_format(*env_list);
 		return ;
 	}
-	i = 1;
-	while (args[i])
+	i = 0;
+	while (args[++i])
 	{
 		parse_env_arg(args[i], &key, &value);
-		if (is_valid_identifier(key))
-		{
-			if (!update_existing_env(env_list, key, value))
-			{
-				lst_addback(env_list, lst_new(key, value));
-			}
-		}
-		else
+		if (is_valid_identifier(key)
+			&& !update_existing_env(env_list, key, value))
+			lst_addback(env_list, lst_new(key, value));
+		else if (!is_valid_identifier(key))
 		{
 			ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd(args[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
 			exit_status(1, PUSH);
 		}
-		i++;
 	}
 	exit_status(0, PUSH);
 }

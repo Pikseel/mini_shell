@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 12:29:16 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/18 15:40:15 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:10:10 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,18 @@ static size_t	lenght(long nb)
 	return (i);
 }
 
+static char	*handle_negative(long *num, int *len, int *flag)
+{
+	char	*s;
+
+	(*len)++;
+	*flag = 1;
+	*num *= -1;
+	s = ft_malloc(*len + 1, ALLOC);
+	s[0] = '-';
+	return (s);
+}
+
 char	*ft_itoa(int n)
 {
 	long	num;
@@ -39,15 +51,10 @@ char	*ft_itoa(int n)
 	len = lenght(num);
 	if (!n)
 		return (ft_strdup("0"));
-	else if (num < 0)
-	{
-		len++;
-		flag = 1;
-		num *= -1;
-	}
-	s = ft_malloc (len + 1, ALLOC);
-	if (flag == 1)
-		s[0] = '-';
+	if (num < 0)
+		s = handle_negative(&num, &len, &flag);
+	else
+		s = ft_malloc(len + 1, ALLOC);
 	s[len] = '\0';
 	len--;
 	while (len >= flag)
@@ -59,14 +66,30 @@ char	*ft_itoa(int n)
 	return (s);
 }
 
+static int	check_overflow(unsigned long res, int sig, int *flag)
+{
+	if (res > LONG_MAX && sig == -1)
+	{
+		*flag = 1;
+		return (0);
+	}
+	if (res > LONG_MAX && sig == 1)
+	{
+		*flag = 1;
+		return (-1);
+	}
+	return (1);
+}
+
 int	ft_atoi(const char *str, int *flag)
 {
 	unsigned long	res;
 	int				sig;
+	int				overflow_result;
 
 	res = 0;
 	sig = 1;
-	while (*str == 32 || (*str >= 9 && *str <= 13))
+	while (ft_is_space(*str))
 		str++;
 	if (*str == '+' || *str == '-')
 	{
@@ -77,16 +100,9 @@ int	ft_atoi(const char *str, int *flag)
 	while (*str >= '0' && *str <= '9')
 	{
 		res = res * 10 + (*(str++) - 48);
-		if (res > 9223372036854775807 && sig == -1)
-		{
-			*flag = 1;
-			return (0);
-		}
-		if (res > 9223372036854775807 && sig == 1)
-		{
-			*flag = 1;
-			return (-1);
-		}
+		overflow_result = check_overflow(res, sig, flag);
+		if (overflow_result != 1)
+			return (overflow_result);
 	}
 	*flag = 0;
 	return ((int)res * sig);

@@ -6,12 +6,18 @@ NAME = minishell
 SRC = main.c \
       env_utils.c \
       execute.c \
+      execute_utils.c \
+      execute_external.c \
       expand_variable.c \
       expansion.c \
+      expansion_utils.c \
+      expansion_utils2.c \
+      expansion_tokens.c \
       garbage.c \
       heredoc.c \
       parser.c \
       pipe.c \
+      pipe_utils.c \
       signal.c \
       syntax.c \
       token.c \

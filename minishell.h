@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/18 17:22:11 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:10:10 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <errno.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <limits.h>
 
 # define ALLOC 0
 # define CLEAR 1
@@ -32,6 +33,9 @@
 
 # define PUSH 0
 # define PULL 1
+
+# define START 0
+# define END 1
 
 typedef enum e_tokentype
 {
@@ -77,6 +81,7 @@ typedef struct s_command
 	char				**args;
 	int					input_fd;
 	int					output_fd;
+	int					redirect_failed;
 	struct s_command	*next;
 }	t_command;
 
@@ -118,6 +123,12 @@ void		lst_addback(t_env **lst, t_env *new);
 t_env		*init_env_list(char **env);
 char		**env_list_to_array(t_env *env_list);
 char		*get_env_value(t_env *env, const char *varname);
+char		*remove_quotes(const char *value, t_tokentype type);
+char		*expand_assignment(const char *value, t_env *env, int *was_quoted);
+int			is_assignment(const char *value);
+char		*process_mixed_content(const char *value, t_env *env,
+				int *was_quoted);
+void		process_token_expansion(t_token *current, t_env *env);
 
 void		init_signal(void);
 void		ignore_signal(void);
@@ -135,11 +146,23 @@ char		*append_char(char *result, const char *value, int *i);
 int			needs_word_splitting(char *expanded_value);
 void		handle_word_splitting(t_token *current, char *expanded_value);
 
-t_command	*parse_tokens_to_commands(t_token *tokens, t_env *env_list);
+t_command	*parse_tkn_to_cmds(t_token *tokens, t_env *env_list);
 void		execute_builtin(char **args, t_env **env_list);
-void		execute_command(t_command *cmd, t_env *env_list);
+void		execute_command(t_command *cmd, t_env **env_list);
+void		execute_external(char **args, t_env *env_list);
 void		execute_external_piped(char **args, t_env *env_list);
 void		execute_piped_commands(t_command *cmd_list, t_env *env_list);
+int			count_commands(t_command *cmd_list);
+void		fork_all_processes(t_command *cmd_list, pid_t *pids,
+				t_env *env_list);
+void		close_all_pipes(t_command *cmd_list);
+void		wait_all_processes(pid_t *pids, int cmd_count);
+void		execute_piped_child(t_command *cmd_list, t_command *current,
+				t_env *env_list);
+char		*find_command_path(char *command, t_env *env_list);
+void		free_env_array(char **env_array);
+void		wait_and_handle_status(pid_t pid);
+int			is_builtin(char *command);
 
 int			check_syntax(char *s);
 

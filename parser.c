@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/18 17:47:09 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 15:43:34 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ static t_command	*create_command(void)
 	cmd->args = NULL;
 	cmd->input_fd = STDIN_FILENO;
 	cmd->output_fd = STDOUT_FILENO;
+	cmd->redirect_failed = 0;
 	cmd->next = NULL;
 	return (cmd);
 }
 
-static void	handle_redirections(t_token *current, t_command *cmd, t_env *env_list)
+static void	handle_redirections(t_token *current, t_command *cmd,
+		t_env *env_list)
 {
 	int	fd;
 
@@ -55,6 +57,8 @@ static void	handle_redirections(t_token *current, t_command *cmd, t_env *env_lis
 				if (fd == -1)
 				{
 					perror("minishell");
+					cmd->redirect_failed = 1;
+					exit_status(1, PUSH);
 					return ;
 				}
 				if (cmd->input_fd != STDIN_FILENO)
@@ -68,10 +72,13 @@ static void	handle_redirections(t_token *current, t_command *cmd, t_env *env_lis
 		{
 			if (current->next && current->next->type == R_FILE)
 			{
-				fd = open(current->next->value, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+				fd = open(current->next->value, O_CREAT
+						| O_WRONLY | O_TRUNC, 0644);
 				if (fd == -1)
 				{
 					perror("minishell");
+					cmd->redirect_failed = 1;
+					exit_status(1, PUSH);
 					return ;
 				}
 				if (cmd->output_fd != STDOUT_FILENO)
@@ -85,10 +92,13 @@ static void	handle_redirections(t_token *current, t_command *cmd, t_env *env_lis
 		{
 			if (current->next && current->next->type == R_FILE)
 			{
-				fd = open(current->next->value, O_CREAT | O_WRONLY | O_APPEND, 0644);
+				fd = open(current->next->value, O_CREAT | O_WRONLY
+						| O_APPEND, 0644);
 				if (fd == -1)
 				{
 					perror("minishell");
+					cmd->redirect_failed = 1;
+					exit_status(1, PUSH);
 					return ;
 				}
 				if (cmd->output_fd != STDOUT_FILENO)
@@ -106,6 +116,7 @@ static void	handle_redirections(t_token *current, t_command *cmd, t_env *env_lis
 				if (fd == -1)
 				{
 					exit_status(130, PUSH);
+					cmd->redirect_failed = 1;
 					return ;
 				}
 				if (cmd->input_fd != STDIN_FILENO)
@@ -134,7 +145,7 @@ static void	add_command(t_command **cmd_list, t_command *new_cmd)
 	current->next = new_cmd;
 }
 
-t_command	*parse_tokens_to_commands(t_token *tokens, t_env *env_list)
+t_command	*parse_tkn_to_cmds(t_token *tokens, t_env *env_list)
 {
 	t_command	*cmd_list;
 	t_command	*current_cmd;
@@ -158,7 +169,8 @@ t_command	*parse_tokens_to_commands(t_token *tokens, t_env *env_list)
 			current_tkn = start_tkn;
 			while (current_tkn && current_tkn->type != PIPE)
 			{
-				if (current_tkn->type == WORD && current_tkn->is_removed == 0 && i < ac)
+				if (current_tkn->type == WORD && current_tkn->is_removed == 0
+					&& i < ac)
 				{
 					current_cmd->args[i++] = ft_strdup(current_tkn->value);
 					if (!current_cmd->command)

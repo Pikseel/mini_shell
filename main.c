@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/18 18:16:59 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:10:10 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,9 @@ static void	check_exit(char *input, t_main *shell)
 
 static void	check_ac(int ac)
 {
+	(void)ac;
+	return ;
+	/*
 	if (ac > 1)
 	{
 		clear_exit(NULL, 127, "no arguments please");
@@ -64,16 +67,18 @@ static void	check_ac(int ac)
 	{
 		clear_exit(NULL, 1, "use terminal please");
 	}
+	*/
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_main	shell;
 
+	(void)av;
 	check_ac(ac);
 	init_shell(&shell, env);
 	ft_malloc((size_t) & shell, SET_SHELL);
-	while (av[0])
+	while (1)
 	{
 		init_signal();
 		shell.input = readline("minishell> ");
@@ -87,9 +92,9 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		free(shell.input);
 		solve_expansion(shell.tkn_list, shell.env_list);
-		shell.cmd_list = parse_tokens_to_commands(shell.tkn_list, shell.env_list);
+		shell.cmd_list = parse_tkn_to_cmds(shell.tkn_list, shell.env_list);
 		if (shell.cmd_list && shell.cmd_list->args && !shell.cmd_list->next)
-			execute_command(shell.cmd_list, shell.env_list);
+			execute_command(shell.cmd_list, &shell.env_list);
 		else if (shell.cmd_list)
 			execute_piped_commands(shell.cmd_list, shell.env_list);
 	}

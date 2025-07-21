@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_is_space.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:27:46 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/04 14:27:50 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/21 13:19:57 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

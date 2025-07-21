@@ -6,19 +6,17 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 12:56:47 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/16 17:35:13 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 15:59:51 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Helper function to safely replace a string and manage memory
 static char	*safe_strjoin_replace(char *old_str, char *append_str)
 {
 	char	*new_str;
 
 	new_str = ft_strjoin(old_str, append_str);
-	// The ft_malloc system will handle cleanup automatically
 	return (new_str);
 }
 
