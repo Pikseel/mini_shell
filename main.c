@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 19:20:38 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 20:16:02 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,3 @@ int	main(int ac, char **av, char **env)
 			execute_piped_commands(shell.cmd_list, shell.env_list);
 	}
 }
-
-// cat << eof sinyal yakalayamiyor
-// flagler alınmayacak builtin -n hariç

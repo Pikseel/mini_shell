@@ -46,6 +46,8 @@ TOOLS_SRC = tools/ft_isalpha.c \
             tools/ft_split.c \
             tools/ft_split_sep.c \
             tools/ft_split_quotes.c \
+            tools/ft_split_quotes_utils.c \
+            tools/ft_split_quotes_utils2.c \
             tools/ft_strchr.c \
             tools/ft_strcmp.c \
             tools/ft_strdup.c \

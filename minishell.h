@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 19:35:06 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 20:47:49 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@
 
 # define START 0
 # define END 1
-
-extern int	g_heredoc_interrupted;
 
 typedef enum e_tokentype
 {
@@ -211,5 +209,13 @@ t_token		*tokenize_input(char *input);
 
 int			needs_word_splitting(char *expanded_value);
 void		handle_word_splitting(t_token *current, char *expanded_value);
+int			is_shell_operator(const char *s, int pos);
+int			handle_quote_start(const char *s, int len, char *quote);
+int			handle_quote_end(const char *s, int len, char *quote);
+char		*extract_word(const char *s, int len);
+void		skip_word(const char **s);
+void		add_word_to_result(char **result, int *i, const char **s);
+int			word_len(const char *s);
+int			handle_quote(const char *s, int len, char *quote, int flag);
 
 #endif

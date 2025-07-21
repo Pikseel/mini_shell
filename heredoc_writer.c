@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:23:07 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 19:13:56 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 20:52:37 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,21 @@ static int	process_heredoc_line(int fd, char *line, t_env *env_list,
 	return (0);
 }
 
-static int	handle_heredoc_input(int fd, char *processed_delimiter,
+static int	handle_heredoc_child(int fd, char *processed_delimiter,
 				t_env *env_list, int expand)
 {
 	char	*line;
 
+	init_heredoc_signal();
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || g_heredoc_interrupted)
+		if (!line)
 		{
-			if (g_heredoc_interrupted)
-			{
-				close(fd);
-				return (-1);
-			}
+			ft_putstr_fd("minishell: warning: here-document delimited by ", 2);
+			ft_putstr_fd("end-of-file (wanted `", 2);
+			ft_putstr_fd(processed_delimiter, 2);
+			ft_putstr_fd("')\n", 2);
 			break ;
 		}
 		if (ft_strcmp(line, processed_delimiter) == 0)
@@ -53,7 +53,31 @@ static int	handle_heredoc_input(int fd, char *processed_delimiter,
 		process_heredoc_line(fd, line, env_list, expand);
 		free(line);
 	}
-	return (0);
+	close(fd);
+	exit(0);
+}
+
+static int	handle_heredoc_parent(int fd, pid_t pid, char *filename)
+{
+	int	status;
+
+	close(fd);
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
+		return (0);
+	else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		unlink(filename);
+		exit_status(130, PUSH);
+		rl_on_new_line();
+		rl_replace_line("", 1);
+		return (-1);
+	}
+	else
+	{
+		unlink(filename);
+		return (-1);
+	}
 }
 
 int	write_heredoc_to_file(char *filename, char *delimiter,
@@ -61,22 +85,22 @@ int	write_heredoc_to_file(char *filename, char *delimiter,
 {
 	int		fd;
 	char	*processed_delimiter;
-	int		result;
+	pid_t	pid;
 
 	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
 		return (-1);
 	processed_delimiter = process_heredoc_delimiter(delimiter);
-	init_heredoc_signal();
-	result = handle_heredoc_input(fd, processed_delimiter, env_list, expand);
-	if (result == -1 && g_heredoc_interrupted)
+	pid = fork();
+	if (pid == -1)
 	{
-		unlink(filename);
-		init_signal();
+		close(fd);
 		return (-1);
 	}
-	close(fd);
-	init_signal();
+	if (pid == 0)
+		handle_heredoc_child(fd, processed_delimiter, env_list, expand);
+	else
+		return (handle_heredoc_parent(fd, pid, filename));
 	return (0);
 }
 
