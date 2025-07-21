@@ -6,52 +6,62 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:23:07 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 16:32:36 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 17:31:48 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+typedef struct s_delimiter_state
+{
+	int	s_quot;
+	int	d_quot;
+	int	i;
+}	t_delimiter_state;
+
+static char	*handle_quote_in_delimiter(char *result, char *delimiter,
+				t_delimiter_state *state)
+{
+	if (delimiter[state->i] == '\'')
+	{
+		if (state->d_quot)
+			result = append_char(result, delimiter, &state->i);
+		else
+		{
+			state->s_quot = !(state->s_quot);
+			state->i++;
+		}
+	}
+	else if (delimiter[state->i] == '\"')
+	{
+		if (state->s_quot)
+			result = append_char(result, delimiter, &state->i);
+		else
+		{
+			state->d_quot = !(state->d_quot);
+			state->i++;
+		}
+	}
+	else
+		result = append_char(result, delimiter, &state->i);
+	return (result);
+}
+
 char	*process_heredoc_delimiter(char *delimiter)
 {
-	char	*result;
-	int		i;
-	int		s_quot;
-	int		d_quot;
+	char				*result;
+	t_delimiter_state	state;
 
 	if (!delimiter)
 		return (NULL);
 	if (ft_strlen(delimiter) == 0)
 		return (ft_strdup(delimiter));
 	result = ft_strdup("");
-	i = 0;
-	s_quot = 0;
-	d_quot = 0;
-	while (delimiter[i])
-	{
-		if (delimiter[i] == '\'')
-		{
-			if (d_quot)
-				result = append_char(result, delimiter, &i);
-			else
-			{
-				s_quot = !s_quot;
-				i++;
-			}
-		}
-		else if (delimiter[i] == '\"')
-		{
-			if (s_quot)
-				result = append_char(result, delimiter, &i);
-			else
-			{
-				d_quot = !d_quot;
-				i++;
-			}
-		}
-		else
-			result = append_char(result, delimiter, &i);
-	}
+	state.i = 0;
+	state.s_quot = 0;
+	state.d_quot = 0;
+	while (delimiter[state.i])
+		result = handle_quote_in_delimiter(result, delimiter, &state);
 	return (result);
 }
 

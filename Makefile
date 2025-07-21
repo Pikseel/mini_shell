@@ -14,11 +14,15 @@ SRC = main.c \
       expansion_utils2.c \
       expansion_tokens.c \
       garbage.c \
-      heredoc.c \
+      garbage_utils.c \
+      garbage_list.c \
+      heredoc_signal.c \
       heredoc_utils.c \
       heredoc_expand.c \
       heredoc_writer.c \
       parser.c \
+      parser_utils.c \
+      parser_redirections.c \
       pipe.c \
       pipe_utils.c \
       signal.c \

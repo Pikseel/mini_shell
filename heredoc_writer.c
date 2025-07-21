@@ -6,26 +6,39 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:23:07 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 16:32:36 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 17:31:48 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+static int	process_heredoc_line(int fd, char *line, t_env *env_list,
+				int expand)
+{
+	char	*expanded_line;
+
+	if (expand)
+	{
+		expanded_line = expand_heredoc_line(line, env_list);
+		write(fd, expanded_line, ft_strlen(expanded_line));
+	}
+	else
+		write(fd, line, ft_strlen(line));
+	write(fd, "\n", 1);
+	return (0);
+}
+
 static int	handle_heredoc_input(int fd, char *processed_delimiter,
 				t_env *env_list, int expand)
 {
 	char	*line;
-	char	*expanded_line;
-	int		*interrupted;
 
-	interrupted = get_heredoc_interrupted();
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || *interrupted)
+		if (!line || g_heredoc_interrupted)
 		{
-			if (*interrupted)
+			if (g_heredoc_interrupted)
 			{
 				close(fd);
 				return (-1);
@@ -37,14 +50,7 @@ static int	handle_heredoc_input(int fd, char *processed_delimiter,
 			free(line);
 			break ;
 		}
-		if (expand)
-		{
-			expanded_line = expand_heredoc_line(line, env_list);
-			write(fd, expanded_line, ft_strlen(expanded_line));
-		}
-		else
-			write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
+		process_heredoc_line(fd, line, env_list, expand);
 		free(line);
 	}
 	return (0);
@@ -56,7 +62,6 @@ int	write_heredoc_to_file(char *filename, char *delimiter,
 	int		fd;
 	char	*processed_delimiter;
 	int		result;
-	int		*interrupted;
 
 	fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd == -1)
@@ -64,8 +69,7 @@ int	write_heredoc_to_file(char *filename, char *delimiter,
 	processed_delimiter = process_heredoc_delimiter(delimiter);
 	init_heredoc_signal();
 	result = handle_heredoc_input(fd, processed_delimiter, env_list, expand);
-	interrupted = get_heredoc_interrupted();
-	if (result == -1 && *interrupted)
+	if (result == -1 && g_heredoc_interrupted)
 	{
 		unlink(filename);
 		init_signal();

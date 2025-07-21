@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 16:32:36 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 17:44:02 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,11 @@ char		*ft_strtrim(char *s, char c);
 void		*ft_malloc(size_t size, int flag);
 void		clear_pointers(t_main *shell);
 void		clear_exit(t_main *shell, int exit_code, char *message);
+t_garbage	*lstlast_garbage(t_garbage *lst);
+void		add_garbage(t_garbage **lst, t_garbage *new);
+t_garbage	*new_garbage(void *adress);
+void		clear_it(t_garbage *garbage);
+void		clear_command_list(t_main *shell);
 
 t_env		*lst_new(char *key, char *value);
 void		lst_addback(t_env **lst, t_env *new);
@@ -148,6 +153,18 @@ int			needs_word_splitting(char *expanded_value);
 void		handle_word_splitting(t_token *current, char *expanded_value);
 
 t_command	*parse_tkn_to_cmds(t_token *tokens, t_env *env_list);
+int			count_word_tokens(t_token *tokens);
+t_command	*create_command(void);
+void		add_command(t_command **cmd_list, t_command *new_cmd);
+void		populate_command_args(t_command *cmd, t_token *start_tkn, int ac);
+t_token		*skip_to_next_pipe(t_token *current_tkn);
+void		handle_input_redirection(t_token *current, t_command *cmd);
+void		handle_output_redirection(t_token *current, t_command *cmd);
+void		handle_append_redirection(t_token *current, t_command *cmd);
+void		handle_heredoc_redirection(t_token *current, t_command *cmd,
+				t_env *env_list);
+void		handle_redirections(t_token *current, t_command *cmd,
+				t_env *env_list);
 void		execute_builtin(char **args, t_env **env_list);
 void		execute_command(t_command *cmd, t_env **env_list);
 void		execute_external(char **args, t_env *env_list);
@@ -179,11 +196,12 @@ int			handle_heredoc(t_token *current, t_env *env_list);
 char		*process_heredoc_delimiter(char *delimiter);
 void		heredoc_signal_handler(int sig);
 void		init_heredoc_signal(void);
-int			*get_heredoc_interrupted(void);
 int			should_expand_heredoc(char *original_delimiter);
 char		*create_temp_filename(void);
 char		*expand_heredoc_line(char *line, t_env *env_list);
 int			write_heredoc_to_file(char *filename, char *delimiter,
 				t_env *env_list, int expand);
+
+extern int	g_heredoc_interrupted;
 
 #endif
