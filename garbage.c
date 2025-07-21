@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:53:17 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 15:10:08 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:19:32 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,9 +129,7 @@ void	*ft_malloc(size_t size, int flag)
 		return (NULL);
 	}
 	else if (flag == GET_SHELL)
-	{
 		return (main_shell);
-	}
 	ret = malloc(size);
 	if (!ret)
 	{

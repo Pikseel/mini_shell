@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 16:10:10 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:35:32 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,7 @@ static void	check_exit(char *input, t_main *shell)
 
 static void	check_ac(int ac)
 {
-	(void)ac;
 	return ;
-	/*
 	if (ac > 1)
 	{
 		clear_exit(NULL, 127, "no arguments please");
@@ -67,18 +65,16 @@ static void	check_ac(int ac)
 	{
 		clear_exit(NULL, 1, "use terminal please");
 	}
-	*/
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_main	shell;
 
-	(void)av;
 	check_ac(ac);
 	init_shell(&shell, env);
 	ft_malloc((size_t) & shell, SET_SHELL);
-	while (1)
+	while (av[0])
 	{
 		init_signal();
 		shell.input = readline("minishell> ");
@@ -101,3 +97,4 @@ int	main(int ac, char **av, char **env)
 }
 
 // cat << eof sinyal yakalayamiyor
+// flagler alınmayacak builtin -n hariç

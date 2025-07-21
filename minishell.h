@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 16:10:10 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:32:36 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ void		ignore_signal(void);
 void		execve_signal(void);
 int			exit_status(int status, int flag);
 
+t_tokentype	identify_token_type(char *str,	t_token *last);
 t_token		*tokenize_input(char *input);
 
 void		solve_expansion(t_token *list, t_env *env);
@@ -178,5 +179,11 @@ int			handle_heredoc(t_token *current, t_env *env_list);
 char		*process_heredoc_delimiter(char *delimiter);
 void		heredoc_signal_handler(int sig);
 void		init_heredoc_signal(void);
+int			*get_heredoc_interrupted(void);
+int			should_expand_heredoc(char *original_delimiter);
+char		*create_temp_filename(void);
+char		*expand_heredoc_line(char *line, t_env *env_list);
+int			write_heredoc_to_file(char *filename, char *delimiter,
+				t_env *env_list, int expand);
 
 #endif

@@ -6,64 +6,11 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/06 17:13:44 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 16:10:09 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/21 16:16:40 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static int	has_mixed_quotes(const char *str)
-{
-	int	has_single;
-	int	has_double;
-	int	i;
-
-	has_single = 0;
-	has_double = 0;
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'')
-			has_single = 1;
-		else if (str[i] == '\"')
-			has_double = 1;
-		i++;
-	}
-	return (has_single && has_double);
-}
-
-static t_tokentype	identify_token_type(char *str,	t_token *last)
-{
-	int	len;
-
-	if (!str || !*str)
-		return (WORD);
-	if (last && last->type == HERDOC)
-		return (HERKEY);
-	if (last && (last->type == R_IN || last->type == R_OUT
-			|| last->type == APPEND))
-		return (R_FILE);
-	if (ft_strcmp(str, "|") == 0)
-		return (PIPE);
-	if (ft_strcmp(str, ">>") == 0)
-		return (APPEND);
-	if (ft_strcmp(str, "<<") == 0)
-		return (HERDOC);
-	if (ft_strcmp(str, "<") == 0)
-		return (R_IN);
-	if (ft_strcmp(str, ">") == 0)
-		return (R_OUT);
-	len = ft_strlen(str);
-	if (has_mixed_quotes(str))
-		return (EXPAND);
-	if (str[0] == '\'' && str[len - 1] == '\'' && len >= 2)
-		return (S_QUOT);
-	if (str[0] == '\"' && str[len - 1] == '\"' && len >= 2)
-		return (D_QUOT);
-	if (str[0] == '$')
-		return (EXPAND);
-	return (WORD);
-}
 
 static void	add_token_back(t_token **lst, t_token *new)
 {
