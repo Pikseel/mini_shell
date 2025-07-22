@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 20:16:02 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/22 20:30:27 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ void	clear_exit(t_main *shell, int exit_code, char *message)
 
 static void	check_exit(char *input, t_main *shell)
 {
+	g_heredoc_interrupted = 0;
 	if (!input)
 	{
 		ft_putstr_fd("exit\n", 1);
@@ -78,20 +79,23 @@ int	main(int ac, char **av, char **env)
 	{
 		init_signal();
 		shell.input = readline("minishell> ");
-		check_exit(shell.input, &shell);
-		if (shell.input)
+		if (check_exit(shell.input, &shell), shell.input)
 			add_history(shell.input);
 		if (check_syntax(shell.input))
 			continue ;
 		shell.tkn_list = tokenize_input(shell.input);
-		if (!shell.tkn_list)
+		if (free(shell.input), !shell.tkn_list)
 			continue ;
-		free(shell.input);
 		solve_expansion(shell.tkn_list, shell.env_list);
 		shell.cmd_list = parse_tkn_to_cmds(shell.tkn_list, shell.env_list);
+		if (g_heredoc_interrupted)
+			continue ;
 		if (shell.cmd_list && shell.cmd_list->args && !shell.cmd_list->next)
 			execute_command(shell.cmd_list, &shell.env_list);
 		else if (shell.cmd_list)
 			execute_piped_commands(shell.cmd_list, shell.env_list);
 	}
 }
+//exit a 5 -> numeric argument required
+//exit "                        5             " -> 5 olarak çıkış yapması gerek
+

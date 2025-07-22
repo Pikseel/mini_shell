@@ -29,6 +29,8 @@ int	exit_status(int status, int flag)
 
 static void	handler(int sig)
 {
+	if (g_heredoc_interrupted)
+		return ;
 	(void)sig;
 	ft_putstr_fd("\n", 1);
 	rl_replace_line("", 1);

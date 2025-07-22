@@ -1,6 +1,0 @@
-minishell> cat << END
-> line 1
-> ^C
-
-minishell> 
-minishell> minishell> 

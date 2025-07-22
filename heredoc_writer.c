@@ -5,79 +5,77 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/21 16:23:07 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 20:52:37 by mecavus          ###   ########.fr       */
+/*   Created: 2025/07/22 14:37:12 by emrozmen          #+#    #+#             */
+/*   Updated: 2025/07/22 20:23:55 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	process_heredoc_line(int fd, char *line, t_env *env_list,
-				int expand)
-{
-	char	*expanded_line;
-
-	if (expand)
-	{
-		expanded_line = expand_heredoc_line(line, env_list);
-		write(fd, expanded_line, ft_strlen(expanded_line));
-	}
-	else
-		write(fd, line, ft_strlen(line));
-	write(fd, "\n", 1);
-	return (0);
-}
-
-static int	handle_heredoc_child(int fd, char *processed_delimiter,
+static int	handle_heredoc_input(int fd, char *processed_delimiter,
 				t_env *env_list, int expand)
 {
 	char	*line;
 
-	init_heredoc_signal();
 	while (1)
 	{
 		line = readline("> ");
-		if (!line)
+		if (!line || g_heredoc_interrupted)
 		{
-			ft_putstr_fd("minishell: warning: here-document delimited by ", 2);
-			ft_putstr_fd("end-of-file (wanted `", 2);
-			ft_putstr_fd(processed_delimiter, 2);
-			ft_putstr_fd("')\n", 2);
+			if (g_heredoc_interrupted)
+			{
+				ft_malloc(0, CLEAR);
+				exit(130);
+			}
 			break ;
 		}
 		if (ft_strcmp(line, processed_delimiter) == 0)
 		{
 			free(line);
+			ft_malloc(0, CLEAR);
 			break ;
 		}
 		process_heredoc_line(fd, line, env_list, expand);
 		free(line);
 	}
-	close(fd);
-	exit(0);
+	return (0);
 }
 
-static int	handle_heredoc_parent(int fd, pid_t pid, char *filename)
+static void	write_heredoc_child(int fd, char *processed_delimiter,
+				t_env *env_list, int expand)
+{
+	int	result;
+
+	init_heredoc_signal();
+	result = handle_heredoc_input(fd, processed_delimiter, env_list, expand);
+	close(fd);
+	if (result == -1)
+		exit(130);
+	else
+		exit(0);
+}
+
+static int	write_heredoc_parent(pid_t pid, int fd, char *filename)
 {
 	int	status;
 
+	signal(SIGINT, SIG_IGN);
 	close(fd);
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-		return (0);
-	else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	init_signal();
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
 		unlink(filename);
-		exit_status(130, PUSH);
-		rl_on_new_line();
-		rl_replace_line("", 1);
+		g_heredoc_interrupted = 1;
 		return (-1);
 	}
-	else
+	if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
 	{
 		unlink(filename);
+		g_heredoc_interrupted = 1;
 		return (-1);
 	}
+	return (0);
 }
 
 int	write_heredoc_to_file(char *filename, char *delimiter,
@@ -92,16 +90,12 @@ int	write_heredoc_to_file(char *filename, char *delimiter,
 		return (-1);
 	processed_delimiter = process_heredoc_delimiter(delimiter);
 	pid = fork();
-	if (pid == -1)
-	{
-		close(fd);
-		return (-1);
-	}
 	if (pid == 0)
-		handle_heredoc_child(fd, processed_delimiter, env_list, expand);
-	else
-		return (handle_heredoc_parent(fd, pid, filename));
-	return (0);
+		write_heredoc_child(fd, processed_delimiter, env_list, expand);
+	else if (pid > 0)
+		return (write_heredoc_parent(pid, fd, filename));
+	close(fd);
+	return (-1);
 }
 
 int	handle_heredoc(t_token *current, t_env *env_list)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
+/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 12:18:35 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 15:43:33 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/22 17:58:18 by emrozmen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,19 +66,4 @@ char	*find_command_path(char *command, t_env *env_list)
 	}
 	free_paths(paths);
 	return (NULL);
-}
-
-void	free_env_array(char **env_array)
-{
-	int	i;
-
-	if (!env_array)
-		return ;
-	i = 0;
-	while (env_array[i])
-	{
-		env_array[i] = NULL;
-		i++;
-	}
-	env_array = NULL;
 }

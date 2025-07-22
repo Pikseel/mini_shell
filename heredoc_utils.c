@@ -6,11 +6,27 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:23:07 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 18:45:39 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/22 20:19:50 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	process_heredoc_line(int fd, char *line,
+				t_env *env_list, int expand)
+{
+	char	*expanded_line;
+
+	if (expand)
+	{
+		expanded_line = expand_heredoc_line(line, env_list);
+		write(fd, expanded_line, ft_strlen(expanded_line));
+	}
+	else
+		write(fd, line, ft_strlen(line));
+	write(fd, "\n", 1);
+	return (0);
+}
 
 static char	*handle_quote_in_delimiter(char *result, char *delimiter,
 				t_delimiter_state *state)

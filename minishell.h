@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 20:47:49 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/22 20:24:19 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,6 @@ char		**env_list_to_array(t_env *env_list);
 void		execute_external(char **args, t_env *env_list);
 void		execute_external_piped(char **args, t_env *env_list);
 char		*find_command_path(char *command, t_env *env_list);
-void		free_env_array(char **env_array);
 void		execute_builtin(char **args, t_env **env_list);
 int			is_builtin(char *command);
 void		execute_command(t_command *cmd, t_env **env_list);
@@ -218,4 +217,10 @@ void		add_word_to_result(char **result, int *i, const char **s);
 int			word_len(const char *s);
 int			handle_quote(const char *s, int len, char *quote, int flag);
 
+int			process_heredoc_line(int fd, char *line,
+				t_env *env_list, int expand);
+t_token		*skip_to_next_pipe(t_token *current_tkn);
+
+extern int	g_heredoc_interrupted;
+				
 #endif
