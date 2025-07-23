@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:25:00 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 15:59:13 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/23 18:01:37 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ static void	init_default_env(t_env **env)
 	lst_addback(env, lst_new(ft_strdup("PATH"), ft_strdup(path)));
 	lst_addback(env, lst_new(ft_strdup("PWD"), pwd_copy));
 	lst_addback(env, lst_new(ft_strdup("SHLVL"), ft_strdup("1")));
+	lst_addback(env, lst_new(ft_strdup("_"), ft_strdup("]")));
 }
 
 static void	parse_env_entry(char *env_entry, char **key, char **value)

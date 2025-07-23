@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/23 16:23:54 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/23 18:08:08 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ static void	check_exit(char *input, t_main *shell)
 
 static void	check_ac(int ac)
 {
+	return ;
 	if (ac > 1)
 		clear_exit(NULL, 127, "no arguments please");
 	if (!isatty(STDIN_FILENO))
