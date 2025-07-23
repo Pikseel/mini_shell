@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
+/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:50:30 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 11:34:25 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/23 12:57:20 by emrozmen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ static void	handler(int sig)
 
 void	init_signal(void)
 {
+	if (g_heredoc_interrupted)
+		g_heredoc_interrupted = 0;
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, &handler);
 }

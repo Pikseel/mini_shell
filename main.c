@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/22 20:30:27 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/23 16:23:54 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	clear_exit(t_main *shell, int exit_code, char *message)
 
 static void	check_exit(char *input, t_main *shell)
 {
-	g_heredoc_interrupted = 0;
 	if (!input)
 	{
 		ft_putstr_fd("exit\n", 1);
@@ -57,15 +56,10 @@ static void	check_exit(char *input, t_main *shell)
 
 static void	check_ac(int ac)
 {
-	return ;
 	if (ac > 1)
-	{
 		clear_exit(NULL, 127, "no arguments please");
-	}
 	if (!isatty(STDIN_FILENO))
-	{
 		clear_exit(NULL, 1, "use terminal please");
-	}
 }
 
 int	main(int ac, char **av, char **env)
@@ -96,6 +90,3 @@ int	main(int ac, char **av, char **env)
 			execute_piped_commands(shell.cmd_list, shell.env_list);
 	}
 }
-//exit a 5 -> numeric argument required
-//exit "                        5             " -> 5 olarak çıkış yapması gerek
-

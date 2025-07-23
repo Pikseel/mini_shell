@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/22 20:24:19 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/23 16:28:59 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,7 +220,8 @@ int			handle_quote(const char *s, int len, char *quote, int flag);
 int			process_heredoc_line(int fd, char *line,
 				t_env *env_list, int expand);
 t_token		*skip_to_next_pipe(t_token *current_tkn);
+void		heredoc_putstr(char *s);
 
 extern int	g_heredoc_interrupted;
-				
+
 #endif
