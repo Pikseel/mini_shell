@@ -3,14 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_writer.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 14:37:12 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/23 14:00:15 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/24 09:58:57 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <readline/readline.h>
 
 static int	handle_heredoc_input(int fd, char *processed_delimiter,
 				t_env *env_list, int expand)

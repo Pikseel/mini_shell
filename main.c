@@ -6,11 +6,14 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:29:43 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/23 18:08:08 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 10:11:12 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <readline/history.h>
+#include <readline/readline.h>
+#include <stdlib.h>
 
 static void	init_shell(t_main *shell, char **env)
 {

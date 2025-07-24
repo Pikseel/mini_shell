@@ -6,11 +6,13 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:10:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 17:44:02 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 10:10:26 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 t_garbage	*lstlast_garbage(t_garbage *lst)
 {

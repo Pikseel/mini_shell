@@ -6,11 +6,12 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 16:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 17:44:02 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 09:51:03 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdlib.h>
 
 void	clear_it(t_garbage *garbage)
 {

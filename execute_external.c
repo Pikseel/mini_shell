@@ -6,11 +6,13 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 12:36:36 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/22 20:08:48 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 10:13:22 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdio.h>
+#include <sys/wait.h>
 
 static void	handle_signal_status(int status)
 {

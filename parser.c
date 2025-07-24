@@ -6,7 +6,7 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/23 18:17:32 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 10:24:41 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,20 +73,20 @@ t_command	*parse_tkn_to_cmds(t_token *tokens, t_env *env_list)
 
 	cmd_list = NULL;
 	current_tkn = tokens;
+	has_pipes = 0;
 	while (current_tkn)
 	{
 		if (current_tkn->type == PIPE)
 			has_pipes = 1;
 		current_tkn = current_tkn->next;
 	}
-	current_tkn = tokens;
-	while (current_tkn)
+	while (tokens)
 	{
-		current_cmd = process_single_command(current_tkn, env_list);
-		current_tkn = skip_to_next_pipe(current_tkn);
+		current_cmd = process_single_command(tokens, env_list);
+		tokens = skip_to_next_pipe(tokens);
 		add_command(&cmd_list, current_cmd);
-		if (current_tkn && current_tkn->type == PIPE)
-			current_tkn = current_tkn->next;
+		if (tokens && tokens->type == PIPE)
+			tokens = tokens->next;
 	}
 	if (!has_pipes)
 		find_and_update_underscore(cmd_list, env_list);

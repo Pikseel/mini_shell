@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_signal.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 16:50:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/23 13:18:59 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/24 09:50:36 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <signal.h>
 
 int	g_heredoc_interrupted = 0;
 

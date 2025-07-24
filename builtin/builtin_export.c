@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
+/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 13:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 13:40:50 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/23 17:07:41 by emrozmen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,13 +95,12 @@ void	builtin_export(char **args, t_env **env_list)
 	int		i;
 	char	*key;
 	char	*value;
+	int		error_flag;
 
 	if (!args[1])
-	{
-		print_export_format(*env_list);
-		return ;
-	}
+		return (print_export_format(*env_list));
 	i = 0;
+	error_flag = 0;
 	while (args[++i])
 	{
 		parse_env_arg(args[i], &key, &value);
@@ -113,8 +112,8 @@ void	builtin_export(char **args, t_env **env_list)
 			ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd(args[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
-			exit_status(1, PUSH);
+			error_flag = 1;
 		}
 	}
-	exit_status(0, PUSH);
+	exit_status(error_flag, PUSH);
 }

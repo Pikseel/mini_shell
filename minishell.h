@@ -6,21 +6,14 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:25:10 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/23 17:33:56 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 10:24:04 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
-# include <signal.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <sys/wait.h>
-# include <fcntl.h>
+#include <unistd.h>
 
 # define ALLOC 0
 # define CLEAR 1
@@ -221,7 +214,6 @@ int			process_heredoc_line(int fd, char *line,
 				t_env *env_list, int expand);
 t_token		*skip_to_next_pipe(t_token *current_tkn);
 void		heredoc_putstr(char *s);
-
 extern int	g_heredoc_interrupted;
 
 #endif

@@ -6,11 +6,13 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:53:17 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/21 17:44:02 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 09:59:30 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 static void	clear_token_list(t_main *shell)
 {

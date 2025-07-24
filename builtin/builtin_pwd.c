@@ -6,11 +6,13 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 15:57:18 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 10:08:43 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 void	builtin_pwd(void)
 {

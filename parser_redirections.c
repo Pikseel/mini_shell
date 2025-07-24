@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parser_redirections.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: emrozmen <emrozmen@student.42kocaeli.co    +#+  +:+       +#+        */
+/*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 15:50:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 20:10:51 by emrozmen         ###   ########.fr       */
+/*   Updated: 2025/07/24 09:58:03 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <fcntl.h>
+#include <stdio.h>
 
 void	handle_input_redirection(t_token *current, t_command *cmd)
 {

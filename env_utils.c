@@ -6,11 +6,12 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/07 14:25:00 by emrozmen          #+#    #+#             */
-/*   Updated: 2025/07/23 18:01:37 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 10:09:02 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include <stdlib.h>
 
 static void	init_default_env(t_env **env)
 {

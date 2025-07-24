@@ -6,13 +6,11 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 16:10:10 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 09:53:05 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <sys/types.h>
-#include <sys/wait.h>
 
 void	execute_builtin(char **args, t_env **env_list)
 {

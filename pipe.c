@@ -6,12 +6,11 @@
 /*   By: mecavus <mecavus@student.42kocaeli.com.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 12:00:00 by mecavus           #+#    #+#             */
-/*   Updated: 2025/07/21 15:43:34 by mecavus          ###   ########.fr       */
+/*   Updated: 2025/07/24 09:57:14 by mecavus          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include <sys/wait.h>
 
 static void	setup_pipes(t_command *cmd_list)
 {
